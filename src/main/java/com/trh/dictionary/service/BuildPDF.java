@@ -840,7 +840,7 @@ public class BuildPDF {
             chapter.add(blankTwo);
             PdfPTable indexTable = setTableHeader(indexHeader, getChineseFontAsStyle(BaseColor.BLACK, 16));
             table.setWidthPercentage(100);
-            indexTable = setIndexTableColumn(indexTable, tableInfo.getIndexInfoList(), font);
+            indexTable = setIndexTableColumn(indexTable, tableInfo.getIndexInfoList(), getFontAsStyle(BaseColor.RED, 10));
             Paragraph indexTableParagraph = new Paragraph();
             indexTableParagraph.add(indexTable);
             chapter.add(indexTableParagraph);
