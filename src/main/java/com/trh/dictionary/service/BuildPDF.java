@@ -78,10 +78,10 @@ public class BuildPDF {
 //            //带目录
 //            build(FILE_DIR, list, "trh_bill3");
 ////            demo();*/
-            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
-            System.out.println("FILE_DIR===" + FILE_DIR);
-            FILE_DIR += "src/main/resources/pdf/";
-            MakePdf("localhost", "trh_bill", "3306", "root", "root",FILE_DIR,"trh_bill6");
+//            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
+//            System.out.println("FILE_DIR===" + FILE_DIR);
+            String  FILE_DIR = "F:/pdf/";
+            MakePdf("localhost", "cd_core", "3306", "root", "root",FILE_DIR,"cd_core");
         } catch (Exception e) {
             e.getStackTrace();
 
@@ -782,7 +782,9 @@ public class BuildPDF {
 
 
     public static void build(String FILE_DIR, List<TableInfo> tableInfos, String pdfName) throws Exception {
-        BaseFont bfChinese = BaseFont.createFont(FILE_DIR.replaceAll("pdf", "font") + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
+        String  fontDir  = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
+        fontDir += "src/main/resources/";
+        BaseFont bfChinese = BaseFont.createFont(fontDir+"font"+File.separator + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
         Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
         // 设置类型，加粗
         font.setStyle(Font.NORMAL);
