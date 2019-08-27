@@ -810,6 +810,7 @@ public class BuildPDF {
         String[] tableHeader = {"序列", "列名", "类型", "可空", "默认值", "注释"};
         String[] indexHeader = {"序列", "索引名", "类型", "包含字段"};
         for (TableInfo tableInfo : tableInfos) {
+            tableInfo = setIsIndex(tableInfo);
             Chapter chapter = new Chapter(new Paragraph(tableInfo.getTableName()), order);
             //设置跳转地址
             Phrase point = new Paragraph("基本信息:",cnFont);

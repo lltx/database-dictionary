@@ -21,13 +21,11 @@ public class ContentEvent extends PdfPageEventHelper {
     @Override
     public void onStartPage (PdfWriter writer, Document document) {
         page++;
-        System.out.println("页码==="+page);
     }
 
     @Override
     public void onChapter (PdfWriter writer, Document document, float paragraphPosition, Paragraph title) {
         index.put(title.getContent(), page);
-        System.out.println("内容==="+title.getContent());
     }
 
     @Override

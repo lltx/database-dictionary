@@ -18,8 +18,6 @@ public class IndexEvent extends PdfPageEventHelper {
         if (body) {
             page++;
             //设置页脚页码
-            //页码是奇数在右边，偶数在左边
-            PdfContentByte cb = writer.getDirectContent();
             float x = (document.rightMargin() + document.right() + document.leftMargin() - document.left()) / 2.0F + 20F;
             Anchor anchor = new Anchor(""+page);
             anchor.setName("user");
