@@ -14,7 +14,7 @@ public class TableInfo {
      */
     private String tableName;
     /**
-     * 排序规则
+     * 字符集
      */
     private String orderType;
     /**
