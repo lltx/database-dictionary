@@ -238,6 +238,7 @@ public class BuildPDF {
                 String[] tempForIndex = temp.trim().split(" ");
                 String containKey = tempForIndex[tempForIndex.length - 1];
                 IndexInfo indexInfo1 = new IndexInfo(TableBasicEnum.WORD_PRIMARY.getDesc(), TableBasicEnum.WORD_PRIMARY.getDesc(), drop(containKey));
+                indexInfo1.setIsIndex(1);
                 indexInfoList.add(indexInfo1);
             }
             //唯一索引

@@ -12,10 +12,18 @@ public class IndexInfo {
         this.type = type;
         this.containKey = containKey;
     }
+    /**
+     * 是否为主键
+     */
+    private int isIndex=0;
     private int order;
     private String name;
     private String type;
     private String containKey;
+
+    public void setIsIndex(int isIndex) {
+        this.isIndex = isIndex;
+    }
 
     public int getOrder() {
         return order;
