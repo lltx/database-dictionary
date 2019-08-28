@@ -35,26 +35,27 @@ public class BuildPDF {
 
     /**
      * 生成PDF
-     * @param ip ：数据库连接的IP  例如：127.0.0.1 或者 localhost
-     * @param dbName 例如: test
-     * @param port 例如: 3306
+     *
+     * @param ip       ：数据库连接的IP  例如：127.0.0.1 或者 localhost
+     * @param dbName   例如: test
+     * @param port     例如: 3306
      * @param userName 例如: root
      * @param passWord 例如: root
      * @param filePath 例如:  D:\ideaspace\export_dbInfo\src\main\resources\
-     * @param pdfName 例如:  testPDF
+     * @param pdfName  例如:  testPDF
      */
-    public static  void  MakePdf(String ip,String dbName,String port,String userName,String passWord,String filePath,String pdfName){
+    public static void MakePdf(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName) {
         try {
             //得到生成数据
             List<TableInfo> list = getBuildPdfTableData(getTables(ip, dbName, port, userName, passWord));
-            if(list.size() == 0){
+            if (list.size() == 0) {
                 return;
             }
             FileUtils.forceMkdir(new File(filePath));
             //带目录
             build(filePath, list, pdfName);
         } catch (Exception e) {
-            logger.error("生成PDF失败.......",e);
+            logger.error("生成PDF失败.......", e);
         }
     }
 
@@ -80,8 +81,8 @@ public class BuildPDF {
 ////            demo();*/
 //            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
 //            System.out.println("FILE_DIR===" + FILE_DIR);
-            String  FILE_DIR = "F:/pdf/";
-            MakePdf("localhost", "cd_core", "3306", "root", "root",FILE_DIR,"cd_core");
+            String FILE_DIR = "F:/pdf/";
+            MakePdf("localhost", "cd_core", "3306", "root", "root", FILE_DIR, "cd_core");
         } catch (Exception e) {
             e.getStackTrace();
 
@@ -90,7 +91,7 @@ public class BuildPDF {
 
 
     /**
-     * 获取所有表信息
+     * 获取数据库所有表信息
      *
      * @param ip
      * @param dbname
@@ -114,23 +115,23 @@ public class BuildPDF {
             }
             //获取表名
             statement = connection.createStatement();
-            String sql = "SHOW  TABLES FROM " + dbname;
+            String sql = "SHOW  TABLES FROM `" + dbname + "`";
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                Map<String, Object> resmap = new HashMap<String, Object>(2);
+                Map<String, Object> resMap = new HashMap<String, Object>(2);
                 TableInfo tableInfo = new TableInfo();
                 //表名
                 String tableName = resultSet.getString(1);
                 //获取表信息
-                String sqlTableInfo = "SHOW CREATE TABLE " + tableName;
+                String sqlTableInfo = "SHOW CREATE TABLE `" + tableName + "`";
                 String createTable = getTableInfo(connection, sqlTableInfo);
                 tableInfo.setTableName(tableName);
-                resmap.put("createTable", createTable);
-                String sql1 = "show full columns from " + tableName;
-                List<ColumnInfo> columnInfos = getpub(connection, sql1);
+                resMap.put("createTable", createTable);
+                String sql1 = "show full columns from `" + tableName + "`";
+                List<ColumnInfo> columnInfos = getTableBaseInfo(connection, sql1);
                 tableInfo.setColumnList(columnInfos);
-                resmap.put("tableInfo", tableInfo);
-                tables.add(resmap);
+                resMap.put("tableInfo", tableInfo);
+                tables.add(resMap);
             }
             return tables;
         } catch (Exception e) {
@@ -150,8 +151,8 @@ public class BuildPDF {
     /**
      * 获取单个表全部信息
      *
-     * @param connection
-     * @param sqlTableInfo
+     * @param connection 数据库连接
+     * @param sqlTableInfo 表信息sql
      * @return
      * @throws SQLException
      */
@@ -165,9 +166,16 @@ public class BuildPDF {
         return table;
     }
 
-    static public List<ColumnInfo> getpub(Connection connection, String sql1) throws Exception {
+    /**
+     *设置表的基本信息
+     * @param connection 数据库连接
+     * @param sql
+     * @return
+     * @throws Exception
+     */
+    static public List<ColumnInfo> getTableBaseInfo(Connection connection, String sql) throws Exception {
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql1);
+        ResultSet resultSet = statement.executeQuery(sql);
         List<ColumnInfo> columnInfos = new ArrayList<ColumnInfo>();
         int order = 1;
         while (resultSet.next()) {
@@ -182,9 +190,6 @@ public class BuildPDF {
             if (null == columnInfo.getDefaultValue()) {
                 columnInfo.setDescription("");
             }
-            if (null == columnInfo.getDefaultValue()) {
-                columnInfo.setDefaultValue("");
-            }
         }
         return columnInfos;
     }
@@ -192,8 +197,8 @@ public class BuildPDF {
     /**
      * 得到构建pdf文件的数据
      *
-     * @param tables
-     * @return
+     * @param tables 获取构建pdf需要的表信息的集合
+     * @return List
      */
     public static List<TableInfo> getBuildPdfTableData(List<Map<String, Object>> tables) {
         //循环处理表
@@ -213,10 +218,9 @@ public class BuildPDF {
     /**
      * 得到表的基本数据
      *
-     * @param tableInfo
-     * @param tableInfos
-     * @return
-     * @throws Exception
+     * @param tableInfo 设置单张表构建pdf的数据
+     * @param tableInfos 表信息字符串
+     * @return TableInfo 表信息对象
      */
     public static TableInfo takeTableInfo(TableInfo tableInfo, String tableInfos) {
         //去掉回车
@@ -322,14 +326,14 @@ public class BuildPDF {
     /**
      * 去掉字符串中的符号
      *
-     * @param str
-     * @return
+     * @param param 需要处理的变量
+     * @return String
      */
-    public static String dest(String str, String reg) {
+    public static String dest(String param, String reg) {
         String temp = "";
-        if (str != null) {
+        if (param != null) {
             Pattern pattern = Pattern.compile(reg);
-            Matcher m = pattern.matcher(str);
+            Matcher m = pattern.matcher(param);
             temp = m.replaceAll("");
         }
         return temp;
@@ -338,20 +342,20 @@ public class BuildPDF {
     /**
      * 得到一个包含一个等号的字符串，获取等号后的值
      *
-     * @param temp
-     * @return
+     * @param param 需处理的变量
+     * @return String
      */
-    public static String dropSign(String temp) {
-        temp = temp.trim();
-        int index = temp.indexOf(SignEnum.equal_sign.getDesc());
-        String res = temp.substring(index + 1);
+    public static String dropSign(String param) {
+        param = param.trim();
+        int index = param.indexOf(SignEnum.equal_sign.getDesc());
+        String res = param.substring(index + 1);
         if (res.contains(SignEnum.single_quotation_marks.getDesc())) {
             try {
                 res = dest(res, SignEnum.single_quotation_marks.getDesc());
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("获取等号后的值异常");
-                return temp;
+                return param;
             }
         }
         return res;
@@ -360,23 +364,22 @@ public class BuildPDF {
     /**
      * 去掉索引逗号
      *
-     * @param temp
-     * @return
-     * @throws Exception
+     * @param param 需处理的变量
+     * @return String
      */
-    public static String drop(String temp) {
+    public static String drop(String param) {
         try {
-            temp = temp.trim();
-            char[] tempArry = temp.toCharArray();
-            char res = tempArry[temp.length() - 1];
-            if (temp.contains(SignEnum.comma.getDesc()) && res == ',') {
-                return temp.substring(0, temp.length() - 1);
+            param = param.trim();
+            char[] tempArry = param.toCharArray();
+            char res = tempArry[param.length() - 1];
+            if (param.contains(SignEnum.comma.getDesc()) && res == ',') {
+                return param.substring(0, param.length() - 1);
             } else {
-                return temp;
+                return param;
             }
         } catch (Exception e) {
             e.getStackTrace();
-            return temp;
+            return param;
         }
     }
 
@@ -783,9 +786,9 @@ public class BuildPDF {
 
 
     public static void build(String FILE_DIR, List<TableInfo> tableInfos, String pdfName) throws Exception {
-        String  fontDir  = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
+        String fontDir = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
         fontDir += "src/main/resources/";
-        BaseFont bfChinese = BaseFont.createFont(fontDir+"font"+File.separator + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
+        BaseFont bfChinese = BaseFont.createFont(fontDir + "font" + File.separator + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
         Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
         // 设置类型，加粗
         font.setStyle(Font.NORMAL);
@@ -803,7 +806,7 @@ public class BuildPDF {
         contentWriter.setPageEvent(event);
         //存目录监听 开始
         doc.open();
-        int order=1;
+        int order = 1;
         List<Chapter> chapterList = new ArrayList<Chapter>();
         //根据chapter章节分页
         //表格
@@ -814,7 +817,7 @@ public class BuildPDF {
             tableInfo = setIsIndex(tableInfo);
             Chapter chapter = new Chapter(new Paragraph(tableInfo.getTableName()), order);
             //设置跳转地址
-            Phrase point = new Paragraph("基本信息:",cnFont);
+            Phrase point = new Paragraph("基本信息:", cnFont);
             Anchor tome = new Anchor(point);
             tome.setName(tableInfo.getTableName());
             Phrase engine = new Phrase("  " + tableInfo.getStorageEngine(), font);
@@ -873,13 +876,13 @@ public class BuildPDF {
             //设置跳转显示名称
             int pageNo = index.getValue();
             Chunk pointChunk = new Chunk(new DottedLineSeparator());
-            Chunk pageNoChunk = new Chunk(pageNo+"");
+            Chunk pageNoChunk = new Chunk(pageNo + "");
             Paragraph jumpParagraph = new Paragraph();
             jumpParagraph.add(key);
             jumpParagraph.add(pointChunk);
             jumpParagraph.add(pageNoChunk);
             Anchor anchor = new Anchor(jumpParagraph);
-            String jump = keyValue[keyValue.length-1].trim();
+            String jump = keyValue[keyValue.length - 1].trim();
             //设置跳转链接
             anchor.setReference("#" + jump);
             indexChapter.add(anchor);
