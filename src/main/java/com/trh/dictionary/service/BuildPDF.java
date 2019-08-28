@@ -9,6 +9,7 @@ import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.trh.dictionary.bean.ColumnInfo;
 import com.trh.dictionary.bean.IndexInfo;
 import com.trh.dictionary.bean.TableInfo;
+import com.trh.dictionary.dao.ConnectionFactory;
 import com.trh.dictionary.util.ColumnBasicEnum;
 import com.trh.dictionary.util.SignEnum;
 import com.trh.dictionary.util.TableBasicEnum;
@@ -47,7 +48,9 @@ public class BuildPDF {
     public static void MakePdf(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName) {
         try {
             //得到生成数据
-            List<TableInfo> list = getBuildPdfTableData(getTables(ip, dbName, port, userName, passWord));
+            String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
+            Connection connection = ConnectionFactory.getConnection(url, userName,passWord);
+            List<TableInfo> list = getBuildPdfTableData(getTables(connection,dbName));
             if (list.size() == 0) {
                 return;
             }
@@ -93,29 +96,18 @@ public class BuildPDF {
     /**
      * 获取数据库所有表信息
      *
-     * @param ip
-     * @param dbname
-     * @param port
-     * @param userName
-     * @param passWord
+     * @param connection
+     * @param dbName
      * @return
      */
-    public static List<Map<String, Object>> getTables(String ip, String dbname, String port, String userName, String passWord) {
-        Connection connection = null;
+    public static List<Map<String, Object>> getTables(Connection connection,String dbName) {
         Statement statement = null;
         ResultSet resultSet = null;
         List<Map<String, Object>> tables = new ArrayList<Map<String, Object>>();
-        String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbname + "?useSSL=false&serverTimezone=UTC";
         try {
-            Class.forName("org.gjt.mm.mysql.Driver");
-            connection = DriverManager.getConnection(url, userName, passWord);
-            if (connection.isClosed()) {
-                System.out.println("-------------------the connect is closed--------------");
-                return null;
-            }
             //获取表名
             statement = connection.createStatement();
-            String sql = "SHOW  TABLES FROM `" + dbname + "`";
+            String sql = "SHOW  TABLES FROM `" + dbName + "`";
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 Map<String, Object> resMap = new HashMap<String, Object>(2);
@@ -139,10 +131,9 @@ public class BuildPDF {
             return tables;
         } finally {
             try {
-                resultSet.close();
-                statement.close();
-                connection.close();
-            } catch (SQLException e) {
+               ConnectionFactory.releaseResource(connection, null
+                       , resultSet, statement);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
