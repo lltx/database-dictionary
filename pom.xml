@@ -39,6 +39,14 @@
             <!--<version>7.1.7</version>-->
             <!--<type>pom</type>-->
         <!--</dependency>-->
+        
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>7.2.2.jre8</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
         <groupId>com.itextpdf</groupId>

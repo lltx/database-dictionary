@@ -17,7 +17,7 @@ import java.util.Map;
 public class ContentEvent extends PdfPageEventHelper {
     private int page;
 
-    Map<String, Integer> index = new LinkedHashMap<String, Integer>();
+    public Map<String, Integer> index = new LinkedHashMap<String, Integer>();
     @Override
     public void onStartPage (PdfWriter writer, Document document) {
         page++;
