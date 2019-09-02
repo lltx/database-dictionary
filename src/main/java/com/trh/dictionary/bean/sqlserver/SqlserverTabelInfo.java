@@ -17,6 +17,8 @@ public class SqlserverTabelInfo {
      */
     private String tableName;
 
+    private String value;
+
     /**
      * 所有列名
      */
@@ -46,5 +48,13 @@ public class SqlserverTabelInfo {
 
     public void setIndexInfoList(List<SqlserverIndexInfo> indexInfoList) {
         this.indexInfoList = indexInfoList;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

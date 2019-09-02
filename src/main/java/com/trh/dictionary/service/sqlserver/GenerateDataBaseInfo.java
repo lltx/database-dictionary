@@ -33,6 +33,7 @@ public class GenerateDataBaseInfo {
         while (resultSet.next()) {
             SqlserverTabelInfo sqlserverTabelInfo = new SqlserverTabelInfo();
             sqlserverTabelInfo.setTableName(resultSet.getString("name"));
+            sqlserverTabelInfo.setValue(resultSet.getString("value"));
             list.add(sqlserverTabelInfo);
         }
         return list;

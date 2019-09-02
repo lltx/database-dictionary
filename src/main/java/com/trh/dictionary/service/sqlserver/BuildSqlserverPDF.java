@@ -54,7 +54,7 @@ public class BuildSqlserverPDF {
             //得到生成数据
             Connection connection = SqlserverConnectionFactory.getConnection(dbURL, userName,passWord);
 
-            String sqltabel="SELECT Name as name FROM SysObjects Where XType='U' ORDER BY Name;";
+            String sqltabel="SELECT DISTINCT d.name,f.value FROM syscolumns a LEFT JOIN systypes b ON a.xusertype=b.xusertype INNER JOIN sysobjects d ON a.id=d.id AND d.xtype='U' AND d.name<> 'dtproperties' LEFT JOIN syscomments e ON a.cdefault=e.id LEFT JOIN sys.extended_properties g ON a.id=G.major_id AND a.colid=g.minor_id LEFT JOIN sys.extended_properties f ON d.id=f.major_id AND f.minor_id=0 ORDER BY d.name;";
 
             List<SqlserverTabelInfo> list_table = GenerateDataBaseInfo.getTableInfo(connection,sqltabel);
             if (list_table.size() == 0) {
@@ -139,14 +139,14 @@ public class BuildSqlserverPDF {
             tome.setName(tableInfo.getTableName());
             Phrase engine = new Phrase("  ", font);
             Phrase type = new Phrase(" " , font);
-            Phrase description = new Phrase(" ", BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            Phrase description = new Phrase(tableInfo.getValue(), BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
             //组装基本数据
             Paragraph contentInfo = new Paragraph();
             contentInfo.add(tome);
-            contentInfo.add(new Paragraph());
             contentInfo.add(engine);
             contentInfo.add(type);
             contentInfo.add(description);
+            contentInfo.add(new Paragraph(" "));
             chapter.add(contentInfo);
             chapter.add(new Paragraph(""));
             //组装表格
