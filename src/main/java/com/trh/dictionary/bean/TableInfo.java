@@ -12,19 +12,19 @@ public class TableInfo {
     /**
      * 表名
      */
-    private String tableName;
+    private String tableName= "";
     /**
      * 字符集
      */
-    private String orderType;
+    private String orderType= "";
     /**
      * 存储引擎
      */
-    private String storageEngine;
+    private String storageEngine= "";
     /**
      * 描述
      */
-    private String description;
+    private String description= "";
     /**
      * 所有列名
      */
@@ -45,6 +45,9 @@ public class TableInfo {
     }
 
     public void setTableName(String tableName) {
+        if(tableName==null){
+            tableName = "";
+        }
         this.tableName = tableName;
     }
 
@@ -53,6 +56,9 @@ public class TableInfo {
     }
 
     public void setOrderType(String orderType) {
+        if(orderType==null){
+            orderType = "";
+        }
         this.orderType = orderType;
     }
 
@@ -61,6 +67,9 @@ public class TableInfo {
     }
 
     public void setStorageEngine(String storageEngine) {
+        if(storageEngine==null){
+            storageEngine = "";
+        }
         this.storageEngine = storageEngine;
     }
 
@@ -69,6 +78,9 @@ public class TableInfo {
     }
 
     public void setDescription(String description) {
+        if(description==null){
+            description = "";
+        }
         this.description = description;
     }
 

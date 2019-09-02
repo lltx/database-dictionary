@@ -710,6 +710,9 @@ public class BuildPDF {
                     if ("description".equalsIgnoreCase(name)) {
                         //如果是注释
                         paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
+                    } else if ("defaultValue".equalsIgnoreCase(name)) {
+                        //如果是注释
+                        paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
                     } else {
                         paragraph = new Paragraph(fields[j].get(obj) + "", font);
                     }
