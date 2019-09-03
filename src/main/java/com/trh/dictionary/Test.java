@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Test {
     @org.junit.Test
-    public  void  testMakePdf(){
+    public  void  testMakeMySqlPdf(){
         String  FILE_DIR = "F:/pdf/";
         BuildPDF.MakePdf("localhost", "cd_core", "3306", "root", "root",FILE_DIR,"cd_core");
     }
