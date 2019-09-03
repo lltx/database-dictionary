@@ -35,7 +35,7 @@ public class Test {
             String filePath = "F:/pdf/";
             FileUtils.forceMkdir(new File(filePath));
             //带目录
-            BuildPDF.build(filePath, tableInfo, "Oraclecd_core8");
+            BuildPDF.build(filePath, tableInfo, "Oraclecd_core10");
             System.out.println("生成数据字典完毕,一共生成了"+tableInfo.size()+"条数据");
         } catch (Exception e) {
             e.printStackTrace();

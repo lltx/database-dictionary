@@ -40,9 +40,15 @@ public class OracleDatabase {
                 String tableName = rs.getString("TABLE_NAME");
                 //得到表的注释
                 String COMMENTS = rs.getString("COMMENTS");
-                //根据表名查询主键列名
-                pstmt = conn.prepareStatement("SELECT column_name FROM all_ind_columns WHERE TABLE_NAME ='"+tableName+"'");
-                ResultSet ResultName = pstmt.executeQuery();
+                //通过表名查询主键索引名和列名
+                pstmt = conn.prepareStatement("select cu.constraint_name,cu.column_name from user_cons_columns cu LEFT JOIN user_constraints au ON cu.constraint_name = au.constraint_name WHERE au.constraint_type = 'P' and au.table_name = '"+tableName+"'");
+                ResultSet index_name = pstmt.executeQuery();
+                String stringName = "";
+                String column_name = "";
+                while (index_name.next()) {
+                    stringName = index_name.getString(1);
+                    column_name = index_name.getString(2);
+                }
                 //通过表名查询所有的列数据
                 pstmt = conn.prepareStatement("SELECT T.column_id,T.column_name,T.data_type,T.data_default,T.nullable,b.comments\n" +
                         "FROM USER_TAB_COLUMNS T LEFT JOIN user_col_comments b ON T.TABLE_NAME =b.table_name AND T.COLUMN_NAME =b.column_name  WHERE T.TABLE_NAME ='"+tableName+"'");
@@ -54,12 +60,9 @@ public class OracleDatabase {
                     String columnName = columnRs.getString(2);
                     columnInfo.setName(columnName);
                     columnInfo.setIsIndex(0);
-                    while (ResultName.next()) {
-                        //得到主键的列名
-                        String indexName = ResultName.getString(1);
-                        if (indexName.equals(columnName)) {
-                            columnInfo.setIsIndex(1);
-                        }
+                    //得到主键的列名
+                    if (column_name.equals(columnName)) {
+                        columnInfo.setIsIndex(1);
                     }
                     //得到序号
                     int order = columnRs.getInt(1);
@@ -83,13 +86,6 @@ public class OracleDatabase {
                     columnInfo.setDescription(description);
                     listColumn.add(columnInfo);
                 }
-                //通过表名查询主键索引名
-                pstmt = conn.prepareStatement("SELECT index_name FROM user_constraints WHERE table_name = '"+tableName+"' and constraint_type = 'P' ");
-                ResultSet index_name = pstmt.executeQuery();
-                String stringName = "";
-                while (index_name.next()) {
-                    stringName = index_name.getString(1);
-                }
                 //查询表的索引说明
                 pstmt = conn.prepareStatement("SELECT rownum,rs.* FROM ( select t.index_name, i.index_type,listagg(t.column_name,',') within group (order by t.index_name) col_name from user_ind_columns t,user_indexes i where t.index_name = i.index_name " +
                         "and t.table_name = i.table_name and t.table_name = '"+tableName+"' GROUP BY t.index_name, i.index_type) rs ");
@@ -107,7 +103,6 @@ public class OracleDatabase {
                     indexInfo.setContainKey(IndexRs.getString(4));
                     listIndex.add(indexInfo);
                 }
-                ResultName.close();
                 IndexRs.close();
                 columnRs.close();
                 index_name.close();
