@@ -8,7 +8,7 @@ package com.trh.dictionary.bean;
  */
 public class ColumnInfo {
     /**
-     * 是否为索引
+     * 是否为主键
      */
     private int isIndex;
     /**
