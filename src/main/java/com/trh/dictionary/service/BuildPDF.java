@@ -710,6 +710,9 @@ public class BuildPDF {
                     if ("description".equalsIgnoreCase(name)) {
                         //如果是注释
                         paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
+                    } else if ("defaultValue".equalsIgnoreCase(name)) {
+                        //如果是注释
+                        paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
                     } else {
                         paragraph = new Paragraph(fields[j].get(obj) + "", font);
                     }
@@ -750,26 +753,26 @@ public class BuildPDF {
         for (ColumnInfo columnInfo : columnInfos) {
             for (IndexInfo indexInfo : indexInfos) {
                 String temp = indexInfo.getContainKey();
-                if (temp.contains(SignEnum.comma.getDesc())) {
-                    String[] keys = temp.split(SignEnum.comma.getDesc());
-                    for (int i = 0; i < keys.length; i++) {
-                        String key = keys[i];
-                        if (key.trim().equals(columnInfo.getName().trim())) {
-                            columnInfo.setIsIndex(1);
-                        }
-                        if (key.trim().contains(columnInfo.getName()) && columnInfo.getOrder() == 1) {
-                            columnInfo.setIsIndex(1);
-                        }
-                    }
-                } else {
-                    if (temp.trim().equals(columnInfo.getName().trim())) {
-                        columnInfo.setIsIndex(1);
-                    }
+//                if (temp.contains(SignEnum.comma.getDesc())) {
+//                    String[] keys = temp.split(SignEnum.comma.getDesc());
+//                    for (int i = 0; i < keys.length; i++) {
+//                        String key = keys[i];
+//                        if (key.trim().equals(columnInfo.getName().trim())) {
+//                            columnInfo.setIsIndex(1);
+//                        }
+//                        if (key.trim().contains(columnInfo.getName()) && columnInfo.getOrder() == 1) {
+//                            columnInfo.setIsIndex(1);
+//                        }
+//                    }
+//                } else {
+//                    if (temp.trim().equals(columnInfo.getName().trim())) {
+//                        columnInfo.setIsIndex(1);
+//                    }
                     String[] res = columnInfo.getName().split(" ");
-                    if (res[0].equals(temp.trim())) {
+                    if (res[0].equals(temp.trim()) && TableBasicEnum.WORD_PRIMARY.getDesc().equals(indexInfo.getType().trim())) {
                         columnInfo.setIsIndex(1);
                     }
-                }
+//                }
             }
         }
         return tableInfo;

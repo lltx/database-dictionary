@@ -7,19 +7,24 @@ package com.trh.dictionary.bean;
  * @create 2019-07-29 15:03
  */
 public class IndexInfo {
-    public IndexInfo(String name, String type, String containKey) {
-        this.name = name;
-        this.type = type;
-        this.containKey = containKey;
-    }
+
     /**
      * 是否为主键
      */
     private int isIndex=0;
     private int order;
-    private String name;
-    private String type;
-    private String containKey;
+    private String name= "";
+    private String type= "";
+    private String containKey= "";
+
+    public IndexInfo() {
+    }
+
+    public IndexInfo(String name, String type, String containKey) {
+        this.name = name;
+        this.type = type;
+        this.containKey = containKey;
+    }
 
     public void setIsIndex(int isIndex) {
         this.isIndex = isIndex;
