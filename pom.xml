@@ -34,12 +34,12 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
         <!--<dependency>-->
-            <!--<groupId>com.itextpdf</groupId>-->
-            <!--<artifactId>itext7-core</artifactId>-->
-            <!--<version>7.1.7</version>-->
-            <!--<type>pom</type>-->
+        <!--<groupId>com.itextpdf</groupId>-->
+        <!--<artifactId>itext7-core</artifactId>-->
+        <!--<version>7.1.7</version>-->
+        <!--<type>pom</type>-->
         <!--</dependency>-->
-        
+
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
@@ -49,9 +49,9 @@
 
 
         <dependency>
-        <groupId>com.itextpdf</groupId>
-        <artifactId>itext-asian</artifactId>
-        <version>5.2.0</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-asian</artifactId>
+            <version>5.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.houbb</groupId>
@@ -70,6 +70,14 @@
             <version>8</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/lib/ojdbc8.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.trh.dictionary</groupId>
+            <artifactId>db2jcc-db2jcc4</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/db2jcc-db2jcc4.jar</systemPath>
         </dependency>
     </dependencies>
 

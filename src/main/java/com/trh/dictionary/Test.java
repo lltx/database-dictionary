@@ -26,6 +26,15 @@ public class Test {
         BuildSqlserverPDF.MakePdf("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA",FILE_DIR,"zhou");
     }
     @org.junit.Test
+    public void testMakeDb2ServerPdf() throws Exception {
+        List<TableInfo> tableInfo = Db2Executor.getDB2Tables("192.168.171.230", "TEST", "db2", "system");
+        if (tableInfo.size() == 0) {
+            return;
+        }
+        String filePath = "E:/pdf/";
+        FileUtils.forceMkdir(new File(filePath));
+        //带目录
+        BuildPDF.build(filePath, tableInfo, "Db2");
     public  void  testMakeOraclePdf(){
         try {
             List<TableInfo> tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//127.0.0.1:1521/orcl","root","123456");
