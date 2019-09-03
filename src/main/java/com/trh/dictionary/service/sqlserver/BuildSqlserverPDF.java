@@ -1,5 +1,6 @@
 package com.trh.dictionary.service.sqlserver;
 
+import com.github.houbb.markdown.toc.util.StringUtil;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -28,6 +29,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.trh.dictionary.service.BuildPDF.getChineseFontAsStyle;
 
 /**
  * @author zhou
@@ -109,7 +112,7 @@ public class BuildSqlserverPDF {
         Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
         // 设置类型，加粗
         font.setStyle(Font.NORMAL);
-        Font cnFont = BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16);
+        Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 16);
         //页面大小
         Rectangle rect = new Rectangle(PageSize.A4).rotate();
         //页面背景色
@@ -139,7 +142,7 @@ public class BuildSqlserverPDF {
             tome.setName(tableInfo.getTableName());
             Phrase engine = new Phrase("  ", font);
             Phrase type = new Phrase(" " , font);
-            Phrase description = new Phrase(tableInfo.getValue(), BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            Phrase description = new Phrase(tableInfo.getValue(), getChineseFontAsStyle(BaseColor.BLACK, 16));
             //组装基本数据
             Paragraph contentInfo = new Paragraph();
             contentInfo.add(tome);
@@ -152,7 +155,7 @@ public class BuildSqlserverPDF {
             //组装表格
             Paragraph tableParagraph = new Paragraph();
             //设置表格
-            PdfPTable table = BuildPDF.setTableHeader(tableHeader, BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            PdfPTable table = BuildPDF.setTableHeader(tableHeader, getChineseFontAsStyle(BaseColor.BLACK, 16));
             //设置列信息
             BuildColumnCell(table, font,tableInfo);
             tableParagraph.add(table);
@@ -160,7 +163,7 @@ public class BuildSqlserverPDF {
             //设置索引表
             Paragraph blankTwo = new Paragraph("\n\n");
             chapter.add(blankTwo);
-            PdfPTable indexTable = BuildPDF.setTableHeader(indexHeader,  BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            PdfPTable indexTable = BuildPDF.setTableHeader(indexHeader,  getChineseFontAsStyle(BaseColor.BLACK, 16));
             table.setWidthPercentage(100);
             indexTable = BuildIndexCell(indexTable,  BuildPDF.getFontAsStyle(BaseColor.RED, 10),tableInfo);
             Paragraph indexTableParagraph = new Paragraph();
@@ -195,8 +198,12 @@ public class BuildSqlserverPDF {
             int pageNo = index.getValue();
             Chunk pointChunk = new Chunk(new DottedLineSeparator());
             Chunk pageNoChunk = new Chunk(pageNo + "");
-            Paragraph jumpParagraph = new Paragraph();
-            jumpParagraph.add(key);
+
+            String tempDescription = key;
+            if (!StringUtil.isEmpty(tableInfos.get(i-1).getValue())){
+                tempDescription += "("+tableInfos.get(i-1).getValue()+")";
+            }
+            Paragraph jumpParagraph = new Paragraph(tempDescription,getChineseFontAsStyle(BaseColor.BLACK,12 ));
             jumpParagraph.add(pointChunk);
             jumpParagraph.add(pageNoChunk);
             Anchor anchor = new Anchor(jumpParagraph);
@@ -231,7 +238,7 @@ public class BuildSqlserverPDF {
         List<SqlserverColumnInfo> columnList=tableInfo.getColumnList();
 
         for(SqlserverColumnInfo columnInfo:columnList){
-            Font cnFont = BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 12);
+            Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 12);
             if("YES".equals(columnInfo.getP_k())){
                 cnFont.setColor(BaseColor.RED);
             }else{
@@ -266,7 +273,7 @@ public class BuildSqlserverPDF {
 
         List<SqlserverIndexInfo> indexInfos=tableInfo.getIndexInfoList();
 
-        Font cnFont = BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 12);
+        Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 12);
         int i=1;
         for(SqlserverIndexInfo indexInfo:indexInfos){
             PdfPCell cell1= new PdfPCell(new Paragraph(i+""));
