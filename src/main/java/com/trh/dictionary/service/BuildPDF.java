@@ -1,5 +1,6 @@
 package com.trh.dictionary.service;
 
+import com.github.houbb.markdown.toc.util.StringUtil;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -871,8 +872,11 @@ public class BuildPDF {
             int pageNo = index.getValue();
             Chunk pointChunk = new Chunk(new DottedLineSeparator());
             Chunk pageNoChunk = new Chunk(pageNo + "");
-            Paragraph jumpParagraph = new Paragraph();
-            jumpParagraph.add(key);
+            String tempDescription = key;
+            if (!StringUtil.isEmpty(tableInfos.get(i-1).getDescription())){
+                tempDescription += "("+tableInfos.get(i-1).getDescription()+")";
+            }
+            Paragraph jumpParagraph = new Paragraph(tempDescription,getChineseFontAsStyle(BaseColor.BLACK,12 ));
             jumpParagraph.add(pointChunk);
             jumpParagraph.add(pageNoChunk);
             Anchor anchor = new Anchor(jumpParagraph);
