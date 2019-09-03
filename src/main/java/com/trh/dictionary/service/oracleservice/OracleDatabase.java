@@ -41,8 +41,8 @@ public class OracleDatabase {
                 //得到表的注释
                 String COMMENTS = rs.getString("COMMENTS");
                 //根据表名查询主键列名
-                PreparedStatement pstmts = conn.prepareStatement("SELECT column_name FROM all_ind_columns WHERE TABLE_NAME ='"+tableName+"'");
-                ResultSet ResultName = pstmts.executeQuery();
+                pstmt = conn.prepareStatement("SELECT column_name FROM all_ind_columns WHERE TABLE_NAME ='"+tableName+"'");
+                ResultSet ResultName = pstmt.executeQuery();
                 //通过表名查询所有的列数据
                 pstmt = conn.prepareStatement("SELECT T.column_id,T.column_name,T.data_type,T.data_default,T.nullable,b.comments\n" +
                         "FROM USER_TAB_COLUMNS T LEFT JOIN user_col_comments b ON T.TABLE_NAME =b.table_name AND T.COLUMN_NAME =b.column_name  WHERE T.TABLE_NAME ='"+tableName+"'");
@@ -83,26 +83,34 @@ public class OracleDatabase {
                     columnInfo.setDescription(description);
                     listColumn.add(columnInfo);
                 }
+                //通过表名查询主键索引名
+                pstmt = conn.prepareStatement("SELECT index_name FROM user_constraints WHERE table_name = '"+tableName+"' and constraint_type = 'P' ");
+                ResultSet index_name = pstmt.executeQuery();
+                String stringName = "";
+                while (index_name.next()) {
+                    stringName = index_name.getString(1);
+                }
                 //查询表的索引说明
-                pstmt = conn.prepareStatement("SELECT rownum,rs.* FROM (SELECT leftTable.*,CASE b.constraint_type WHEN  'P' THEN '1' ELSE '0'END AS isIndex \n" +
-                        " FROM ( select t.index_name, i.index_type,listagg(t.column_name,',') within group (order by t.index_name) col_name from user_ind_columns t LEFT JOIN user_indexes i ON t.index_name = i.index_name and\n" +
-                        "t.table_name='" + tableName + "' GROUP BY t.index_name, i.index_type\n" +
-                        ") leftTable LEFT JOIN user_constraints b ON leftTable.index_name = b.constraint_name ORDER BY isIndex) rs ");
+                pstmt = conn.prepareStatement("SELECT rownum,rs.* FROM ( select t.index_name, i.index_type,listagg(t.column_name,',') within group (order by t.index_name) col_name from user_ind_columns t,user_indexes i where t.index_name = i.index_name " +
+                        "and t.table_name = i.table_name and t.table_name = '"+tableName+"' GROUP BY t.index_name, i.index_type) rs ");
                 ResultSet IndexRs = pstmt.executeQuery();
                 List<IndexInfo> listIndex = new ArrayList<IndexInfo>();
                 while (IndexRs.next()) {
                     IndexInfo indexInfo = new IndexInfo();
-                    indexInfo.setIsIndex(IndexRs.getInt(5));
+                    String indexRsString = IndexRs.getString(2);
+                    if(stringName.equalsIgnoreCase(indexRsString)){
+                        indexInfo.setIsIndex(1);
+                    }
                     indexInfo.setOrder(IndexRs.getInt(1));
-                    indexInfo.setName(IndexRs.getString(2));
+                    indexInfo.setName(indexRsString);
                     indexInfo.setType(IndexRs.getString(3));
                     indexInfo.setContainKey(IndexRs.getString(4));
                     listIndex.add(indexInfo);
                 }
-                pstmts.close();
                 ResultName.close();
                 IndexRs.close();
                 columnRs.close();
+                index_name.close();
                 tableInfo.setTableName(tableName);
                 tableInfo.setDescription(COMMENTS);
                 tableInfo.setColumnList(listColumn);
