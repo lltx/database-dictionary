@@ -69,7 +69,7 @@ public class Db2Executor {
             columnInfo.setIsNull(rs.getString("NULLS").trim());
             columnInfo.setDefaultValue(StringUtils.isNullOrEmpty(rs.getString("DEFAULT")) ? "" : rs.getString("DEFAULT").trim());
             columnInfo.setType(rs.getString("TYPENAME").trim() + "(" + rs.getString("LENGTH").trim() + ")");
-            columnInfo.setIsIndex(isIndex(connection, table, rs.getString("COLNAME").trim()));
+            columnInfo.setIsIndex(getTablePrimaryKey(connection, table, rs.getString("COLNAME").trim()));
             columns.add(columnInfo);
         }
         return columns;

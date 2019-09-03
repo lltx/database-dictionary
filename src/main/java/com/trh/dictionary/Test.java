@@ -38,5 +38,4 @@ public class Test {
         BuildPDF.build(filePath, tableInfo, "Db2");
     }
 
-
 }
