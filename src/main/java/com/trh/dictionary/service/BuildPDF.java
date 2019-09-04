@@ -50,7 +50,7 @@ public class BuildPDF {
         try {
             //得到生成数据
             String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
-            Connection connection = ConnectionFactory.getConnection(url, userName,passWord);
+            Connection connection = ConnectionFactory.getConnection(url, userName,passWord,"mySql");
             List<TableInfo> list = getBuildPdfTableData(getTables(connection,dbName));
             if (list.size() == 0) {
                 return;
@@ -165,7 +165,7 @@ public class BuildPDF {
      * @return
      * @throws Exception
      */
-    static public List<ColumnInfo> getTableBaseInfo(Connection connection, String sql) throws Exception {
+     public static List<ColumnInfo> getTableBaseInfo(Connection connection, String sql) throws Exception {
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
         List<ColumnInfo> columnInfos = new ArrayList<ColumnInfo>();
