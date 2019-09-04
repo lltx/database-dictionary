@@ -544,7 +544,7 @@ public class BuildPDF {
     /**
      * 写markdown文件
      */
-    public static void writeMarkdown(List<TableInfo> list, String filePath) {
+    public static String writeMarkdown(List<TableInfo> list, String filePath) {
         StringBuffer markdown = new StringBuffer();
         String res1 = "|:------:|:------:|:------:|:------:|:------:|:------:|" + "\n";
         int i = 1;
@@ -584,8 +584,7 @@ public class BuildPDF {
         }
         //目录
         markdown.insert(0, "[TOC]\n");
-        logger.info("表信息\n" + markdown.toString());
-        createDir(filePath + "\\allTable.txt", markdown.toString());
+        return markdown.toString();
     }
 
     /**
