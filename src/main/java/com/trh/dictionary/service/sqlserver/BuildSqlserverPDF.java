@@ -38,6 +38,8 @@ import static com.trh.dictionary.service.BuildPDF.getChineseFontAsStyle;
  */
 public class BuildSqlserverPDF {
 
+    static Logger logger = LoggerFactory.getLogger(BuildSqlserverPDF.class);
+
     /**
      * 生成PDF
      *
@@ -63,7 +65,7 @@ public class BuildSqlserverPDF {
                 return;
             }
             for(SqlserverTabelInfo Ta:list_table){
-                System.out.println(Ta.getTableName());
+                logger.info(Ta.getTableName());
                 List<SqlserverColumnInfo> list_column=new ArrayList<SqlserverColumnInfo>();
                 List<SqlserverIndexInfo> list_index=new ArrayList<SqlserverIndexInfo>();
                 String sqlcolumn="SELECT (CASE WHEN a.colorder=1 THEN d.name ELSE NULL END) table_name,a.colorder column_num,a.name column_name,(CASE WHEN COLUMNPROPERTY(a.id,a.name,'IsIdentity')=1 THEN 'YES' ELSE '' END) is_identity,(CASE WHEN (\n" +
@@ -74,7 +76,7 @@ public class BuildSqlserverPDF {
                 try {
                     list_column=GenerateDataBaseInfo.getColumnInfo(connection,sqlcolumn);
                     for(SqlserverColumnInfo s:list_column){
-                        System.out.println(s.toString());
+                        logger.info(s.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -87,7 +89,7 @@ public class BuildSqlserverPDF {
                 try {
                     list_index=GenerateDataBaseInfo.getIndexInfo(connection,sqlindex);
                     for(SqlserverIndexInfo s:list_index){
-                        System.out.println(s.toString());
+                        logger.info(s.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -100,7 +102,7 @@ public class BuildSqlserverPDF {
             build(filePath, list_table, pdfName);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("生成PDF失败");
+            logger.info("生成PDF失败");
         }
     }
 

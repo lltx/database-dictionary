@@ -67,11 +67,11 @@ public class BuildPDF {
         try {
 /*            //得到生成数据
 //            List<TableInfo> list = getBuildPdfTableData(getTables("localhost", "trh_bill", "3306", "root", "root"));
-//            System.out.println("--------" + list.size());
+//            logger.info("--------" + list.size());
 //            String name = "D:\\ideaspace\\export_dbInfo\\src\\main\\resources\\txt\\" + System.currentTimeMillis();
 ////            String FILE_DIR = "D:\\ideaspace\\database-dictionary\\src\\main\\resources\\pdf\\";
 //            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
-//            System.out.println("FILE_DIR===" + FILE_DIR);
+//            logger.info("FILE_DIR===" + FILE_DIR);
 //            FILE_DIR += "src/main/resources/pdf/";
 //            //生成markdown语法
 ////            writeMarkdown(list,name);
@@ -84,7 +84,7 @@ public class BuildPDF {
 //            build(FILE_DIR, list, "trh_bill3");
 ////            demo();*/
 //            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
-//            System.out.println("FILE_DIR===" + FILE_DIR);
+//            logger.info("FILE_DIR===" + FILE_DIR);
             String FILE_DIR = "F:/pdf/";
             MakePdf("localhost", "cd_core", "3306", "root", "root", FILE_DIR, "cd_core");
         } catch (Exception e) {
@@ -423,7 +423,7 @@ public class BuildPDF {
                 String name = tableInfo.getTableName();
                 // 生成
                 String t = name + getPoint(name, 120) + index;
-                System.out.println(t);
+                logger.info(t);
                 Anchor toUS = new Anchor(t);
                 // 取到锚点
                 String point = "#" + name;
@@ -583,7 +583,7 @@ public class BuildPDF {
         }
         //目录
         markdown.insert(0, "[TOC]\n");
-        System.out.println("表信息\n" + markdown.toString());
+        logger.info("表信息\n" + markdown.toString());
         createDir(filePath + "\\allTable.txt", markdown.toString());
     }
 
@@ -621,7 +621,6 @@ public class BuildPDF {
     public static String getPoint(String name, int size) {
         int length = name.length();
         int res = size - length;
-        System.out.println();
         StringBuffer str = new StringBuffer();
         for (int i = 0; i < res; i++) {
             str.append(SignEnum.point.getDesc());

@@ -70,6 +70,8 @@ public class GenerateDataBaseInfo {
             sqlserverColumnInfo.setClass_desc(resultSet.getString("class_desc"));
             list.add(sqlserverColumnInfo);
         }
+        resultSet.close();
+        statement.close();
         return list;
     }
 

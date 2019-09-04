@@ -37,7 +37,6 @@ public class ConnectionFactory {
         try {
             connection = DriverManager.getConnection(url, userName, passWord);
             if (connection.isClosed()) {
-                System.out.println("------------------- the connect is closed --------------");
                 return null;
             }
         } catch (SQLException e) {

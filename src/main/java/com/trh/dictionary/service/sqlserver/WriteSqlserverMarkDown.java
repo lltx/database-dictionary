@@ -4,7 +4,10 @@ import com.trh.dictionary.bean.sqlserver.SqlserverColumnInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverIndexInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverTabelInfo;
 import com.trh.dictionary.dao.sqlserver.SqlserverConnectionFactory;
+import com.trh.dictionary.service.BuildPDF;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +24,7 @@ import java.util.List;
  */
 public class WriteSqlserverMarkDown {
 
+    static Logger logger = LoggerFactory.getLogger(WriteSqlserverMarkDown.class);
     /**
      * 生成Markdown
      *
@@ -46,7 +50,7 @@ public class WriteSqlserverMarkDown {
                 return;
             }
             for(SqlserverTabelInfo Ta:list_table){
-                System.out.println(Ta.getTableName());
+                logger.info(Ta.getTableName());
                 List<SqlserverColumnInfo> list_column=new ArrayList<SqlserverColumnInfo>();
                 List<SqlserverIndexInfo> list_index=new ArrayList<SqlserverIndexInfo>();
                 String sqlcolumn="SELECT (CASE WHEN a.colorder=1 THEN d.name ELSE NULL END) table_name,a.colorder column_num,a.name column_name,(CASE WHEN COLUMNPROPERTY(a.id,a.name,'IsIdentity')=1 THEN 'YES' ELSE '' END) is_identity,(CASE WHEN (\n" +
@@ -57,7 +61,7 @@ public class WriteSqlserverMarkDown {
                 try {
                     list_column=GenerateDataBaseInfo.getColumnInfo(connection,sqlcolumn);
                     for(SqlserverColumnInfo s:list_column){
-                        System.out.println(s.toString());
+                        logger.info(s.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -68,10 +72,10 @@ public class WriteSqlserverMarkDown {
                         "SELECT INDEX_COL(OBJECT_NAME(i.object_id),i.index_id,key_ordinal),CASE WHEN is_descending_key=1 THEN N'(-)' ELSE N'' END+',' FROM sys.index_columns WHERE object_id=i.object_id AND index_id=i.index_id AND key_ordinal<> 0 ORDER BY key_ordinal FOR XML PATH ('')) AS ind_col,(\n" +
                         "SELECT col.name +',' FROM sys.index_columns inxc JOIN sys.columns col ON col.object_id=inxc.object_id AND col.column_id =inxc.column_id WHERE inxc.object_id=i.object_id AND inxc.index_id =i.index_id AND inxc.is_included_column =1 FOR XML PATH ('')) AS include_col FROM sys.indexes i JOIN sys.stats s ON i.object_id=s.object_id AND i.index_id =s.stats_id WHERE i.object_id=object_id('"+Ta.getTableName()+"')) Ind ORDER BY index_name";
                 try {
-                    System.out.println(sqlindex);
+                    logger.info(sqlindex);
                     list_index=GenerateDataBaseInfo.getIndexInfo(connection,sqlindex);
                     for(SqlserverIndexInfo s:list_index){
-                        System.out.println(s.toString());
+                        logger.info(s.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -84,7 +88,7 @@ public class WriteSqlserverMarkDown {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("生成Markdown失败");
+            logger.info("生成Markdown失败");
         }finally {
             try {
                 connection.close();
@@ -140,7 +144,7 @@ public class WriteSqlserverMarkDown {
         }
         //目录
         markdown.insert(0, "[TOC]\n");
-        System.out.println("表信息\n" + markdown.toString());
+        logger.info("表信息\n" + markdown.toString());
         createDir(filePath + "\\allTable.txt", markdown.toString());
     }
 

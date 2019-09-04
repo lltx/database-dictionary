@@ -7,6 +7,8 @@ import com.trh.dictionary.service.oracleservice.OracleDatabase;
 import com.trh.dictionary.service.sqlserver.BuildSqlserverPDF;
 import com.trh.dictionary.service.sqlserver.WriteSqlserverMarkDown;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.List;
  * @create 2019-07-25 11:04
  */
 public class Test {
+
+    static Logger logger = LoggerFactory.getLogger(Test.class);
+
     @org.junit.Test
     public  void  testMakeMySqlPdf(){
         String  FILE_DIR = "F:/pdf/";
@@ -40,7 +45,7 @@ public class Test {
             //带目录
             BuildPDF.build(filePath, tableInfo, "Oraclecd_core8");
             BuildPDF.writeMarkdown(tableInfo,filePath);
-            System.out.println("生成数据字典完毕,一共生成了"+tableInfo.size()+"条数据");
+            logger.info("生成数据字典完毕,一共生成了"+tableInfo.size()+"条数据");
         } catch (Exception e) {
             e.printStackTrace();
         }
