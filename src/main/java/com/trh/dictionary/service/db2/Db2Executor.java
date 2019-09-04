@@ -174,8 +174,8 @@ public class Db2Executor {
         return 0;
     }
 
-    public static List<TableInfo> getDB2Tables(String host, String schema, String user, String password) throws SQLException, ClassNotFoundException {
-        Connection connection = SqlExecutor.newDB2Connection(host, schema, user, password);
+    public static List<TableInfo> getDB2Tables(String host, int port,  String schema, String user, String password) throws SQLException, ClassNotFoundException {
+        Connection connection = SqlExecutor.newDB2Connection(host, port, schema, user, password);
         List<TableInfo> db2Tables = getDB2Tables(connection, schema);
         return db2Tables;
     }
