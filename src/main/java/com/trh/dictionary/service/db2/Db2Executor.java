@@ -5,6 +5,8 @@ import com.trh.dictionary.bean.ColumnInfo;
 import com.trh.dictionary.bean.IndexInfo;
 import com.trh.dictionary.bean.TableInfo;
 import com.trh.dictionary.util.SqlExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,20 +21,16 @@ import java.util.Map;
  */
 public class Db2Executor {
 
-    private static String HOST = "192.168.171.230";
-    private static String SCHEMA = "TEST";
-    private static String USER = "db2";
-    private static String PASSWORD = "system";
+    private static Logger logger = LoggerFactory.getLogger(Db2Executor.class);
 
-
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Connection connection = SqlExecutor.newDB2Connection(HOST, SCHEMA, USER, PASSWORD);
-        List<TableInfo> db2Tables = getDB2Tables(connection, SCHEMA);
-        for (TableInfo table : db2Tables) {
-            getDb2Columns(connection, table.getTableName(), SCHEMA);
-            getTableIndexMap(connection, table.getTableName());
-        }
-    }
+//    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+//        Connection connection = SqlExecutor.newDB2Connection("192.168.171.230", "TEST", "db2", "system");
+//        List<TableInfo> db2Tables = getDB2Tables(connection, "TEST");
+//        for (TableInfo table : db2Tables) {
+//            getDb2Columns(connection, table.getTableName(), "TEST");
+//            getTableIndexMap(connection, table.getTableName());
+//        }
+//    }
 
     /**
      * 查询表结构
@@ -72,6 +70,7 @@ public class Db2Executor {
             columnInfo.setIsIndex(getTablePrimaryKey(connection, table, rs.getString("COLNAME").trim()));
             columns.add(columnInfo);
         }
+        SqlExecutor.releaseResource(null, null, rs, statement);
         return columns;
     }
 
@@ -116,6 +115,7 @@ public class Db2Executor {
             indexMap.put(columnName, indexName);
             indexList.add(indexMap);
         }
+        SqlExecutor.releaseResource(null, null, rs, statement);
         return indexList;
     }
 
@@ -146,11 +146,12 @@ public class Db2Executor {
             indexInfo.setOrder(rs.getInt("IID"));
             indexList.add(indexInfo);
         }
+        SqlExecutor.releaseResource(null, null, rs, statement);
         return indexList;
     }
 
     /**
-     * 判斷是否是主鍵
+     * 判断是否是主鍵
      *
      * @param connection
      * @param table
@@ -169,12 +170,13 @@ public class Db2Executor {
                 return 1;
             }
         }
+        SqlExecutor.releaseResource(null, null, rs, statement);
         return 0;
     }
 
     public static List<TableInfo> getDB2Tables(String host, String schema, String user, String password) throws SQLException, ClassNotFoundException {
         Connection connection = SqlExecutor.newDB2Connection(host, schema, user, password);
-        List<TableInfo> db2Tables = getDB2Tables(connection, SCHEMA);
+        List<TableInfo> db2Tables = getDB2Tables(connection, schema);
         return db2Tables;
     }
 
@@ -185,9 +187,8 @@ public class Db2Executor {
      * @param schema
      * @return
      * @throws SQLException
-     * @throws ClassNotFoundException
      */
-    public static List<TableInfo> getDB2Tables(Connection connection, String schema) throws SQLException, ClassNotFoundException {
+    public static List<TableInfo> getDB2Tables(Connection connection, String schema) throws SQLException {
         List<TableInfo> tables = new ArrayList<TableInfo>();
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet rs = metaData.getTables(null, schema, "%", new String[]{"TABLE"});
@@ -204,6 +205,7 @@ public class Db2Executor {
             tableInfo.setIndexInfoList(getTableIndexList(connection, tableName));
             tables.add(tableInfo);
         }
+        SqlExecutor.releaseResource(null, null, rs, null);
         return tables;
     }
 }
