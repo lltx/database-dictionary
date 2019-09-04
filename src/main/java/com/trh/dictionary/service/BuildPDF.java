@@ -541,7 +541,7 @@ public class BuildPDF {
     /**
      * 写markdown文件
      */
-    private static void writeMarkdown(List<TableInfo> list, String filePath) {
+    public static void writeMarkdown(List<TableInfo> list, String filePath) {
         StringBuffer markdown = new StringBuffer();
         String res1 = "|:------:|:------:|:------:|:------:|:------:|:------:|" + "\n";
         int i = 1;

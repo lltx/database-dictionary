@@ -39,6 +39,7 @@ public class Test {
             FileUtils.forceMkdir(new File(filePath));
             //带目录
             BuildPDF.build(filePath, tableInfo, "Oraclecd_core8");
+            BuildPDF.writeMarkdown(tableInfo,filePath);
             System.out.println("生成数据字典完毕,一共生成了"+tableInfo.size()+"条数据");
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +55,7 @@ public class Test {
         FileUtils.forceMkdir(new File(filePath));
         //带目录
         BuildPDF.build(filePath, tableInfo, "Db2");
+        BuildPDF.writeMarkdown(tableInfo, "E:/pdf/");
     }
 
 
@@ -62,5 +64,6 @@ public class Test {
         String  FILE_DIR = "F:/pdf/";
         WriteSqlserverMarkDown.MakeMarkdown("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA",FILE_DIR);
     }
+
 
 }
