@@ -38,6 +38,7 @@ public class Test {
             FileUtils.forceMkdir(new File(filePath));
             //带目录
             BuildPDF.build(filePath, tableInfo, "Oraclecd_core8");
+            BuildPDF.writeMarkdown(tableInfo,filePath);
             System.out.println("生成数据字典完毕,一共生成了"+tableInfo.size()+"条数据");
         } catch (Exception e) {
             e.printStackTrace();
