@@ -183,6 +183,8 @@ public class BuildPDF {
                 columnInfo.setDescription("");
             }
         }
+         statement.close();
+         resultSet.close();
         return columnInfos;
     }
 
