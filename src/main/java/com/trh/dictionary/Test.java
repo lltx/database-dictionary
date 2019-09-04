@@ -54,5 +54,7 @@ public class Test {
         FileUtils.forceMkdir(new File(filePath));
         //带目录
         BuildPDF.build(filePath, tableInfo, "Db2");
+        BuildPDF.writeMarkdown(tableInfo, "E:/pdf/");
     }
+
 }
