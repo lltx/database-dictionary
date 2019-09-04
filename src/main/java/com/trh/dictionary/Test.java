@@ -5,6 +5,7 @@ import com.trh.dictionary.service.BuildPDF;
 import com.trh.dictionary.service.db2.Db2Executor;
 import com.trh.dictionary.service.oracleservice.OracleDatabase;
 import com.trh.dictionary.service.sqlserver.BuildSqlserverPDF;
+import com.trh.dictionary.service.sqlserver.WriteSqlserverMarkDown;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -54,4 +55,12 @@ public class Test {
         //带目录
         BuildPDF.build(filePath, tableInfo, "Db2");
     }
+
+
+    @org.junit.Test
+    public  void  testMakeSqlServerMarkdown(){
+        String  FILE_DIR = "F:/pdf/";
+        WriteSqlserverMarkDown.MakeMarkdown("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA",FILE_DIR);
+    }
+
 }

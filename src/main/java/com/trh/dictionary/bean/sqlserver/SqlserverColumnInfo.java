@@ -7,31 +7,31 @@ package com.trh.dictionary.bean.sqlserver;
  */
 public class SqlserverColumnInfo {
 
-    private String table_name;//表名
+    private String table_name= "";//表名
 
-    private String column_num;//字段序号
+    private String column_num= "";//字段序号
 
-    private String column_name;//字段名
+    private String column_name= "";//字段名
 
-    private String is_identity;//标识
+    private String is_identity= "";//标识
 
-    private String p_k;//主键
+    private String p_k= "";//主键
 
-    private String type;//类型
+    private String type= "";//类型
 
-    private String occupied_num;//占用字节数
+    private String occupied_num= "";//占用字节数
 
-    private String length;//长度
+    private String length= "";//长度
 
-    private String scale;//小数位数
+    private String scale= "";//小数位数
 
-    private String is_null;//允许空
+    private String is_null= "";//允许空
 
-    private String default_value;//默认值
+    private String default_value= "";//默认值
 
-    private String decs;//说明
+    private String decs= "";//说明
 
-    private String class_desc;
+    private String class_desc= "";
 
     public String getTable_name() {
         return table_name;

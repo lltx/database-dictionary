@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 import com.trh.dictionary.bean.ColumnInfo;
+import com.trh.dictionary.bean.IndexInfo;
 import com.trh.dictionary.bean.TableInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverColumnInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverIndexInfo;
@@ -21,9 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;

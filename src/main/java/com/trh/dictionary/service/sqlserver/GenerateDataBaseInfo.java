@@ -36,6 +36,8 @@ public class GenerateDataBaseInfo {
             sqlserverTabelInfo.setValue(resultSet.getString("value"));
             list.add(sqlserverTabelInfo);
         }
+        resultSet.close();
+        statement.close();
         return list;
     }
 
@@ -89,6 +91,8 @@ public class GenerateDataBaseInfo {
             sqlserverIndexInfo.setIndex_keys(resultSet.getString("index_keys"));
             list.add(sqlserverIndexInfo);
         }
+        resultSet.close();
+        statement.close();
         return list;
     }
 
