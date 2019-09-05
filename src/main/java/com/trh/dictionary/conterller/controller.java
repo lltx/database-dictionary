@@ -35,35 +35,28 @@ public class controller {
         }
         String markdown = BuildPDF.writeMarkdown(tableInfo);
         model.addAttribute("markdown",markdown);
-        return "/index";
+        return "/index1";
     }
     @RequestMapping("/login.action")
     public String login(Model model,String selector,String ip,String port,String password,String username,String database){
-
-/*        	<option value ="1">mysql</option>
-	<option value ="2">oracle</option>
-	<option value="3">SQL server</option>
-	<option value="4">PostgreSQL</option>
-	<option value="5">DB2</option>*/
         List<TableInfo> tableInfo = null;
-
         switch (selector){
-            case "1":
+            case "mysql":
                 //得到生成数据
                 String url = "jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
                 Connection connection = ConnectionFactory.getConnection(url, username, password, "mySql");
                 tableInfo  = BuildPDF.getBuildPdfTableData(BuildPDF.getTables(connection, database));
                 break;
-            case "2":
+            case "oracle":
                 tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//"+ip+":"+port+"/"+database+"",username,password);
                 break;
-            case "3":
+            case "SQL server":
                 model.addAttribute("markdown",WriteSqlserverMarkDown.MakeMarkdownString(ip,database,port,username,password));
 
                 return "/markdown";
 
-            case "4":break;
-            case "5":
+            case "PostgreSQL":break;
+            case "DB2":
                 try {
                     tableInfo = Db2Executor.getDB2Tables(ip, Integer.valueOf(port), database.toUpperCase(), username, password);
                 } catch (SQLException e) {
