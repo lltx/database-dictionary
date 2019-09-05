@@ -1,4 +1,7 @@
 package com.trh.dictionary.dao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
@@ -9,13 +12,27 @@ import java.sql.*;
  * @create 2019-08-28 16:28
  */
 public class ConnectionFactory {
-
-    public static Connection getConnection(String url,String userName,String passWord){
+    public static String mySql="mySql";
+    public static String pgSql="pgSql";
+    static Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
+    /**
+     * 得到数据库连接
+     * @param url 地址
+     * @param userName 用户名
+     * @param passWord 密码
+     * @param driverName 驱动名：mySql、pgSql
+     * @return
+     */
+    public static Connection getConnection(String url,String userName,String passWord,String driverName){
         Connection connection = null;
         //创建驱动
         try {
-            Class.forName("org.gjt.mm.mysql.Driver");
-
+            if (mySql.equals(driverName)){
+                Class.forName("org.gjt.mm.mysql.Driver");
+            }else if (pgSql.equals(driverName)){
+                Class.forName("org.postgresql.Driver");
+            }
+            logger.info("-----------------------连接数据库");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -23,7 +40,7 @@ public class ConnectionFactory {
         try {
             connection = DriverManager.getConnection(url, userName, passWord);
             if (connection.isClosed()) {
-                System.out.println("-------------------the connect is closed--------------");
+                logger.error("------------------- the connect is closed --------------");
                 return null;
             }
         } catch (SQLException e) {

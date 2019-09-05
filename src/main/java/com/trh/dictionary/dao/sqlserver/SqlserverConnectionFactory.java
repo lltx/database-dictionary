@@ -1,5 +1,9 @@
 package com.trh.dictionary.dao.sqlserver;
 
+import com.trh.dictionary.service.BuildPDF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 
 /**
@@ -8,6 +12,8 @@ import java.sql.*;
  * @description:
  */
 public class SqlserverConnectionFactory {
+
+    static Logger logger = LoggerFactory.getLogger(SqlserverConnectionFactory.class);
 
     public static Connection getConnection(String url, String userName, String passWord){
         Connection connection = null;
@@ -21,7 +27,7 @@ public class SqlserverConnectionFactory {
         try {
             connection = DriverManager.getConnection(url, userName, passWord);
             if (connection.isClosed()) {
-                System.out.println("-------------------the connect is closed--------------");
+                logger.info("-------------------the connect is closed--------------");
                 return null;
             }
         } catch (SQLException e) {

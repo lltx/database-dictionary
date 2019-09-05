@@ -4,6 +4,8 @@ import com.trh.dictionary.bean.sqlserver.SqlserverColumnInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverIndexInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverTabelInfo;
 import com.trh.dictionary.service.sqlserver.GenerateDataBaseInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.util.List;
@@ -15,6 +17,8 @@ import java.util.List;
  */
 public class TestConnection {
 
+    static Logger logger = LoggerFactory.getLogger(SqlserverConnectionFactory.class);
+
     @org.junit.Test
     public  void  testConnection(){
 
@@ -22,7 +26,6 @@ public class TestConnection {
         String userName="SA";
         String userPwd="zhoufan123AAA";
         Connection connection = SqlserverConnectionFactory.getConnection(dbURL,userName,userPwd);
-        System.out.println(connection);
         String sqltabel="SELECT Name as name FROM SysObjects Where XType='U' ORDER BY Name;";
         List<SqlserverTabelInfo> list_table=null;
         try {
@@ -31,7 +34,7 @@ public class TestConnection {
             e.printStackTrace();
         }
         for(SqlserverTabelInfo Ta:list_table){
-            System.out.println(Ta.getTableName());
+            logger.info(Ta.getTableName());
             String sqlcolumn="SELECT (CASE WHEN a.colorder=1 THEN d.name ELSE NULL END) table_name,a.colorder column_num,a.name column_name,(CASE WHEN COLUMNPROPERTY(a.id,a.name,'IsIdentity')=1 THEN 'YES' ELSE '' END) is_identity,(CASE WHEN (\n" +
                     "SELECT COUNT (*) FROM sysobjects WHERE (name IN (\n" +
                     "SELECT name FROM sysindexes WHERE (id=a.id) AND (indid IN (\n" +
@@ -40,7 +43,7 @@ public class TestConnection {
             try {
                 List<SqlserverColumnInfo> list_column=GenerateDataBaseInfo.getColumnInfo(connection,sqlcolumn);
                 for(SqlserverColumnInfo s:list_column){
-                    System.out.println(s.toString());
+                    logger.info(s.toString());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -54,7 +57,7 @@ public class TestConnection {
             try {
                 List<SqlserverIndexInfo> list_index=GenerateDataBaseInfo.getIndexInfo(connection,sqlindex);
                 for(SqlserverIndexInfo s:list_index){
-                    System.out.println(s.toString());
+                    logger.info(s.toString());
                 }
 
             } catch (Exception e) {

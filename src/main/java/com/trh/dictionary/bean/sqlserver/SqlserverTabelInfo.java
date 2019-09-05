@@ -15,9 +15,9 @@ public class SqlserverTabelInfo {
     /**
      * 表名
      */
-    private String tableName;
+    private String tableName= "";
 
-    private String value;
+    private String value= "";
 
     /**
      * 所有列名
@@ -55,6 +55,9 @@ public class SqlserverTabelInfo {
     }
 
     public void setValue(String value) {
+        if(null==value){
+            value="";
+        }
         this.value = value;
     }
 }

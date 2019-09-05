@@ -1,5 +1,6 @@
 package com.trh.dictionary.service;
 
+import com.github.houbb.markdown.toc.util.StringUtil;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -49,8 +50,8 @@ public class BuildPDF {
         try {
             //得到生成数据
             String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
-            Connection connection = ConnectionFactory.getConnection(url, userName,passWord);
-            List<TableInfo> list = getBuildPdfTableData(getTables(connection,dbName));
+            Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "mySql");
+            List<TableInfo> list = getBuildPdfTableData(getTables(connection, dbName));
             if (list.size() == 0) {
                 return;
             }
@@ -62,15 +63,41 @@ public class BuildPDF {
         }
     }
 
+
+    /**
+     * 生成PDF
+     *
+     * @param ip       ：数据库连接的IP  例如：127.0.0.1 或者 localhost
+     * @param dbName   例如: test
+     * @param port     例如: 3306
+     * @param userName 例如: root
+     * @param passWord 例如: root
+     * @param filePath 例如:  D:\ideaspace\export_dbInfo\src\main\resources\
+     */
+    public static void MakeMarkDown(String ip, String dbName, String port, String userName, String passWord, String filePath) {
+        try {
+            //得到生成数据
+            String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
+            Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "mySql");
+            List<TableInfo> list = getBuildPdfTableData(getTables(connection, dbName));
+            if (list.size() == 0) {
+                return;
+            }
+            writeMarkdown(list,filePath);
+        } catch (Exception e) {
+            logger.error("生成markdown失败.......", e);
+        }
+    }
+
     public static void main(String[] args) {
         try {
 /*            //得到生成数据
 //            List<TableInfo> list = getBuildPdfTableData(getTables("localhost", "trh_bill", "3306", "root", "root"));
-//            System.out.println("--------" + list.size());
+//            logger.info("--------" + list.size());
 //            String name = "D:\\ideaspace\\export_dbInfo\\src\\main\\resources\\txt\\" + System.currentTimeMillis();
 ////            String FILE_DIR = "D:\\ideaspace\\database-dictionary\\src\\main\\resources\\pdf\\";
 //            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
-//            System.out.println("FILE_DIR===" + FILE_DIR);
+//            logger.info("FILE_DIR===" + FILE_DIR);
 //            FILE_DIR += "src/main/resources/pdf/";
 //            //生成markdown语法
 ////            writeMarkdown(list,name);
@@ -83,7 +110,7 @@ public class BuildPDF {
 //            build(FILE_DIR, list, "trh_bill3");
 ////            demo();*/
 //            String FILE_DIR = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
-//            System.out.println("FILE_DIR===" + FILE_DIR);
+//            logger.info("FILE_DIR===" + FILE_DIR);
             String FILE_DIR = "F:/pdf/";
             MakePdf("localhost", "cd_core", "3306", "root", "root", FILE_DIR, "cd_core");
         } catch (Exception e) {
@@ -100,7 +127,7 @@ public class BuildPDF {
      * @param dbName
      * @return
      */
-    public static List<Map<String, Object>> getTables(Connection connection,String dbName) {
+    public static List<Map<String, Object>> getTables(Connection connection, String dbName) {
         Statement statement = null;
         ResultSet resultSet = null;
         List<Map<String, Object>> tables = new ArrayList<Map<String, Object>>();
@@ -131,8 +158,8 @@ public class BuildPDF {
             return tables;
         } finally {
             try {
-               ConnectionFactory.releaseResource(connection, null
-                       , resultSet, statement);
+                ConnectionFactory.releaseResource(connection, null
+                        , resultSet, statement);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -142,7 +169,7 @@ public class BuildPDF {
     /**
      * 获取单个表全部信息
      *
-     * @param connection 数据库连接
+     * @param connection   数据库连接
      * @param sqlTableInfo 表信息sql
      * @return
      * @throws SQLException
@@ -158,13 +185,14 @@ public class BuildPDF {
     }
 
     /**
-     *设置表的基本信息
+     * 设置表的基本信息
+     *
      * @param connection 数据库连接
      * @param sql
      * @return
      * @throws Exception
      */
-    static public List<ColumnInfo> getTableBaseInfo(Connection connection, String sql) throws Exception {
+    public static List<ColumnInfo> getTableBaseInfo(Connection connection, String sql) throws Exception {
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
         List<ColumnInfo> columnInfos = new ArrayList<ColumnInfo>();
@@ -182,6 +210,8 @@ public class BuildPDF {
                 columnInfo.setDescription("");
             }
         }
+        statement.close();
+        resultSet.close();
         return columnInfos;
     }
 
@@ -209,7 +239,7 @@ public class BuildPDF {
     /**
      * 得到表的基本数据
      *
-     * @param tableInfo 设置单张表构建pdf的数据
+     * @param tableInfo  设置单张表构建pdf的数据
      * @param tableInfos 表信息字符串
      * @return TableInfo 表信息对象
      */
@@ -420,7 +450,7 @@ public class BuildPDF {
                 String name = tableInfo.getTableName();
                 // 生成
                 String t = name + getPoint(name, 120) + index;
-                System.out.println(t);
+                logger.info(t);
                 Anchor toUS = new Anchor(t);
                 // 取到锚点
                 String point = "#" + name;
@@ -540,7 +570,7 @@ public class BuildPDF {
     /**
      * 写markdown文件
      */
-    private static void writeMarkdown(List<TableInfo> list, String filePath) {
+    public static String writeMarkdown(List<TableInfo> list, String filePath) {
         StringBuffer markdown = new StringBuffer();
         String res1 = "|:------:|:------:|:------:|:------:|:------:|:------:|" + "\n";
         int i = 1;
@@ -580,8 +610,7 @@ public class BuildPDF {
         }
         //目录
         markdown.insert(0, "[TOC]\n");
-        System.out.println("表信息\n" + markdown.toString());
-        createDir(filePath + "\\allTable.txt", markdown.toString());
+        return markdown.toString();
     }
 
     /**
@@ -618,7 +647,6 @@ public class BuildPDF {
     public static String getPoint(String name, int size) {
         int length = name.length();
         int res = size - length;
-        System.out.println();
         StringBuffer str = new StringBuffer();
         for (int i = 0; i < res; i++) {
             str.append(SignEnum.point.getDesc());
@@ -706,16 +734,11 @@ public class BuildPDF {
             if (fields[j].getType().getName().equals(java.lang.String.class.getName())) {
                 // String type
                 try {
-                    int k = 1;
-                    if ("description".equalsIgnoreCase(name)) {
-                        //如果是注释
-                        paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
-                    } else if ("defaultValue".equalsIgnoreCase(name)) {
-                        //如果是注释
-                        paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
-                    } else {
-                        paragraph = new Paragraph(fields[j].get(obj) + "", font);
+                    if (isChineseContent(fields[j].get(obj) + "")) {
+                        font = cnFont;
                     }
+                    paragraph = new Paragraph(fields[j].get(obj) + "", font);
+
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -726,12 +749,8 @@ public class BuildPDF {
                     || fields[j].getType().getName().equals("int")) {
                 // Integer type
                 try {
-                    if ("description".equalsIgnoreCase(name)) {
-                        //如果是注释
-                        paragraph = new Paragraph(fields[j].get(obj) + "", cnFont);
-                    } else {
-                        paragraph = new Paragraph(fields[j].get(obj) + "", font);
-                    }
+                    paragraph = new Paragraph(fields[j].get(obj) + "", font);
+
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -753,26 +772,26 @@ public class BuildPDF {
         for (ColumnInfo columnInfo : columnInfos) {
             for (IndexInfo indexInfo : indexInfos) {
                 String temp = indexInfo.getContainKey();
-                if (temp.contains(SignEnum.comma.getDesc())) {
-                    String[] keys = temp.split(SignEnum.comma.getDesc());
-                    for (int i = 0; i < keys.length; i++) {
-                        String key = keys[i];
-                        if (key.trim().equals(columnInfo.getName().trim())) {
-                            columnInfo.setIsIndex(1);
-                        }
-                        if (key.trim().contains(columnInfo.getName()) && columnInfo.getOrder() == 1) {
-                            columnInfo.setIsIndex(1);
-                        }
-                    }
-                } else {
-                    if (temp.trim().equals(columnInfo.getName().trim())) {
-                        columnInfo.setIsIndex(1);
-                    }
-                    String[] res = columnInfo.getName().split(" ");
-                    if (res[0].equals(temp.trim())) {
-                        columnInfo.setIsIndex(1);
-                    }
+//                if (temp.contains(SignEnum.comma.getDesc())) {
+//                    String[] keys = temp.split(SignEnum.comma.getDesc());
+//                    for (int i = 0; i < keys.length; i++) {
+//                        String key = keys[i];
+//                        if (key.trim().equals(columnInfo.getName().trim())) {
+//                            columnInfo.setIsIndex(1);
+//                        }
+//                        if (key.trim().contains(columnInfo.getName()) && columnInfo.getOrder() == 1) {
+//                            columnInfo.setIsIndex(1);
+//                        }
+//                    }
+//                } else {
+//                    if (temp.trim().equals(columnInfo.getName().trim())) {
+//                        columnInfo.setIsIndex(1);
+//                    }
+                String[] res = columnInfo.getName().split(" ");
+                if (res[0].equals(temp.trim()) && TableBasicEnum.WORD_PRIMARY.getDesc().equals(indexInfo.getType().trim())) {
+                    columnInfo.setIsIndex(1);
                 }
+//                }
             }
         }
         return tableInfo;
@@ -780,7 +799,7 @@ public class BuildPDF {
 
 
     public static void build(String FILE_DIR, List<TableInfo> tableInfos, String pdfName) throws Exception {
-        String fontDir = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
+        String fontDir = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "").replaceAll("target/test-classes/", "");
         fontDir += "src/main/resources/";
         BaseFont bfChinese = BaseFont.createFont(fontDir + "font" + File.separator + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
         Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
@@ -871,8 +890,11 @@ public class BuildPDF {
             int pageNo = index.getValue();
             Chunk pointChunk = new Chunk(new DottedLineSeparator());
             Chunk pageNoChunk = new Chunk(pageNo + "");
-            Paragraph jumpParagraph = new Paragraph();
-            jumpParagraph.add(key);
+            String tempDescription = key;
+            if (!StringUtil.isEmpty(tableInfos.get(i - 1).getDescription())) {
+                tempDescription += "(" + tableInfos.get(i - 1).getDescription() + ")";
+            }
+            Paragraph jumpParagraph = new Paragraph(tempDescription, getChineseFontAsStyle(BaseColor.BLACK, 12));
             jumpParagraph.add(pointChunk);
             jumpParagraph.add(pageNoChunk);
             Anchor anchor = new Anchor(jumpParagraph);
@@ -893,5 +915,16 @@ public class BuildPDF {
 
         document.close();
         os.close();
+    }
+
+
+    public static boolean isChineseContent(String content) {
+        String regex = "[\u4e00-\u9fa5]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(content);
+        if (matcher.find()) {
+            return true;
+        }
+        return false;
     }
 }

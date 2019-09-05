@@ -7,13 +7,14 @@ package com.trh.dictionary.bean.sqlserver;
  */
 public class SqlserverIndexInfo {
 
-    private String index_name;
+    private String index_name= "";
 
-    private String index_desc;
+    private String index_desc= "";
 
-    private String index_keys;
+    private String index_keys= "";
 
     public String getIndex_name() {
+        index_name=index_name.replaceAll("__","_");
         return index_name;
     }
 

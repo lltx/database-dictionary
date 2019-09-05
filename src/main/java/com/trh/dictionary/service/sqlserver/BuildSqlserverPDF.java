@@ -1,17 +1,15 @@
 package com.trh.dictionary.service.sqlserver;
 
+import com.github.houbb.markdown.toc.util.StringUtil;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import com.trh.dictionary.bean.ColumnInfo;
-import com.trh.dictionary.bean.TableInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverColumnInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverIndexInfo;
 import com.trh.dictionary.bean.sqlserver.SqlserverTabelInfo;
-import com.trh.dictionary.dao.ConnectionFactory;
 import com.trh.dictionary.dao.sqlserver.SqlserverConnectionFactory;
 import com.trh.dictionary.service.BuildPDF;
 import com.trh.dictionary.service.ContentEvent;
@@ -20,14 +18,14 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.trh.dictionary.service.BuildPDF.getChineseFontAsStyle;
 
 /**
  * @author zhou
@@ -35,6 +33,8 @@ import java.util.Map;
  * @description:
  */
 public class BuildSqlserverPDF {
+
+    static Logger logger = LoggerFactory.getLogger(BuildSqlserverPDF.class);
 
     /**
      * 生成PDF
@@ -61,7 +61,7 @@ public class BuildSqlserverPDF {
                 return;
             }
             for(SqlserverTabelInfo Ta:list_table){
-                System.out.println(Ta.getTableName());
+                logger.info(Ta.getTableName());
                 List<SqlserverColumnInfo> list_column=new ArrayList<SqlserverColumnInfo>();
                 List<SqlserverIndexInfo> list_index=new ArrayList<SqlserverIndexInfo>();
                 String sqlcolumn="SELECT (CASE WHEN a.colorder=1 THEN d.name ELSE NULL END) table_name,a.colorder column_num,a.name column_name,(CASE WHEN COLUMNPROPERTY(a.id,a.name,'IsIdentity')=1 THEN 'YES' ELSE '' END) is_identity,(CASE WHEN (\n" +
@@ -72,7 +72,7 @@ public class BuildSqlserverPDF {
                 try {
                     list_column=GenerateDataBaseInfo.getColumnInfo(connection,sqlcolumn);
                     for(SqlserverColumnInfo s:list_column){
-                        System.out.println(s.toString());
+                        logger.info(s.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,7 +85,7 @@ public class BuildSqlserverPDF {
                 try {
                     list_index=GenerateDataBaseInfo.getIndexInfo(connection,sqlindex);
                     for(SqlserverIndexInfo s:list_index){
-                        System.out.println(s.toString());
+                        logger.info(s.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -98,7 +98,7 @@ public class BuildSqlserverPDF {
             build(filePath, list_table, pdfName);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("生成PDF失败");
+            logger.info("生成PDF失败");
         }
     }
 
@@ -109,7 +109,7 @@ public class BuildSqlserverPDF {
         Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
         // 设置类型，加粗
         font.setStyle(Font.NORMAL);
-        Font cnFont = BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16);
+        Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 16);
         //页面大小
         Rectangle rect = new Rectangle(PageSize.A4).rotate();
         //页面背景色
@@ -139,7 +139,7 @@ public class BuildSqlserverPDF {
             tome.setName(tableInfo.getTableName());
             Phrase engine = new Phrase("  ", font);
             Phrase type = new Phrase(" " , font);
-            Phrase description = new Phrase(tableInfo.getValue(), BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            Phrase description = new Phrase(tableInfo.getValue(), getChineseFontAsStyle(BaseColor.BLACK, 16));
             //组装基本数据
             Paragraph contentInfo = new Paragraph();
             contentInfo.add(tome);
@@ -152,7 +152,7 @@ public class BuildSqlserverPDF {
             //组装表格
             Paragraph tableParagraph = new Paragraph();
             //设置表格
-            PdfPTable table = BuildPDF.setTableHeader(tableHeader, BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            PdfPTable table = BuildPDF.setTableHeader(tableHeader, getChineseFontAsStyle(BaseColor.BLACK, 16));
             //设置列信息
             BuildColumnCell(table, font,tableInfo);
             tableParagraph.add(table);
@@ -160,7 +160,7 @@ public class BuildSqlserverPDF {
             //设置索引表
             Paragraph blankTwo = new Paragraph("\n\n");
             chapter.add(blankTwo);
-            PdfPTable indexTable = BuildPDF.setTableHeader(indexHeader,  BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 16));
+            PdfPTable indexTable = BuildPDF.setTableHeader(indexHeader,  getChineseFontAsStyle(BaseColor.BLACK, 16));
             table.setWidthPercentage(100);
             indexTable = BuildIndexCell(indexTable,  BuildPDF.getFontAsStyle(BaseColor.RED, 10),tableInfo);
             Paragraph indexTableParagraph = new Paragraph();
@@ -195,8 +195,12 @@ public class BuildSqlserverPDF {
             int pageNo = index.getValue();
             Chunk pointChunk = new Chunk(new DottedLineSeparator());
             Chunk pageNoChunk = new Chunk(pageNo + "");
-            Paragraph jumpParagraph = new Paragraph();
-            jumpParagraph.add(key);
+
+            String tempDescription = key;
+            if (!StringUtil.isEmpty(tableInfos.get(i-1).getValue())){
+                tempDescription += "("+tableInfos.get(i-1).getValue()+")";
+            }
+            Paragraph jumpParagraph = new Paragraph(tempDescription,getChineseFontAsStyle(BaseColor.BLACK,12 ));
             jumpParagraph.add(pointChunk);
             jumpParagraph.add(pageNoChunk);
             Anchor anchor = new Anchor(jumpParagraph);
@@ -231,7 +235,7 @@ public class BuildSqlserverPDF {
         List<SqlserverColumnInfo> columnList=tableInfo.getColumnList();
 
         for(SqlserverColumnInfo columnInfo:columnList){
-            Font cnFont = BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 12);
+            Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 12);
             if("YES".equals(columnInfo.getP_k())){
                 cnFont.setColor(BaseColor.RED);
             }else{
@@ -266,7 +270,7 @@ public class BuildSqlserverPDF {
 
         List<SqlserverIndexInfo> indexInfos=tableInfo.getIndexInfoList();
 
-        Font cnFont = BuildPDF.getChineseFontAsStyle(BaseColor.BLACK, 12);
+        Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 12);
         int i=1;
         for(SqlserverIndexInfo indexInfo:indexInfos){
             PdfPCell cell1= new PdfPCell(new Paragraph(i+""));

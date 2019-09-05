@@ -1,12 +1,10 @@
 package com.trh.dictionary.util;
 
-import com.mysql.jdbc.StringUtils;
-import com.trh.dictionary.bean.ColumnInfo;
-import com.trh.dictionary.bean.IndexInfo;
-import com.trh.dictionary.bean.TableInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Properties;
 
 /**
  * @author TangXu
@@ -14,6 +12,8 @@ import java.util.*;
  * @description:
  */
 public class SqlExecutor {
+
+    static final Logger logger = LoggerFactory.getLogger(SqlExecutor.class);
 
     public static Connection newDB2Connection(String db) throws ClassNotFoundException, SQLException {
         String host = "127.0.0.1";
@@ -39,7 +39,6 @@ public class SqlExecutor {
 
     public static Connection newDB2Connection(String host, int port, String db, boolean reconnect, String encoding, String username, String password) throws ClassNotFoundException, SQLException, SQLException {
         String driver = "com.ibm.db2.jcc.DB2Driver";
-//        String format = "jdbc:mysql://%s:%d/%s?autoReconnect=%s&characterEncoding=%s&serverTimezone=Asia/Shanghai";
         String format = "jdbc:db2://%s:%d/%s";
         String url = String.format(format, host, port, db);
         Class.forName(driver);
@@ -57,6 +56,37 @@ public class SqlExecutor {
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
+        }
+    }
+
+    /**
+     * 释放连接
+     *
+     * @param connection
+     * @param preparedStatement
+     * @param resultSet
+     * @param statement
+     */
+    public static void releaseResource(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet, Statement statement) {
+        try {
+
+            if (null != statement) {
+                statement.close();
+            }
+
+            if (null != preparedStatement) {
+                preparedStatement.close();
+            }
+
+            if (null != resultSet) {
+                resultSet.close();
+            }
+
+            if (null != connection) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
     }
 }
