@@ -74,5 +74,10 @@ public class Test {
         WriteSqlserverMarkDown.MakeMarkdown("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA",FILE_DIR);
     }
 
+    @org.junit.Test
+    public  void  testMakeSqlServerMarkdownStrig(){
+        logger.info(WriteSqlserverMarkDown.MakeMarkdownString("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA"));
+    }
+
 
 }

@@ -5,6 +5,7 @@ import com.trh.dictionary.dao.ConnectionFactory;
 import com.trh.dictionary.service.BuildPDF;
 import com.trh.dictionary.service.db2.Db2Executor;
 import com.trh.dictionary.service.oracleservice.OracleDatabase;
+import com.trh.dictionary.service.sqlserver.WriteSqlserverMarkDown;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,7 +57,11 @@ public class controller {
             case "2":
                 tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//"+ip+":"+port+"/"+database+"",username,password);
                 break;
-            case "3":break;
+            case "3":
+                model.addAttribute("markdown",WriteSqlserverMarkDown.MakeMarkdownString(ip,database,port,username,password));
+
+                return "/markdown";
+
             case "4":break;
             case "5":
                 try {

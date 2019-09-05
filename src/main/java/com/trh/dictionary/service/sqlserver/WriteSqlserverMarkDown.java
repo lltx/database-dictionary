@@ -154,7 +154,7 @@ public class WriteSqlserverMarkDown {
         int i = 1;
         for (SqlserverTabelInfo info : list) {
             StringBuffer oneTble = new StringBuffer();
-            oneTble.append("##" + i + "." + info.getTableName() + "\n" + "基本信息:" + info.getValue() + " "
+            oneTble.append("##" + i + "." + info.getTableName() +" "+ info.getValue()+"\n" + "基本信息:" + info.getValue() + " "
                     + "\n\n" + "|序列|列名|主键|类型|可空|默认值|注释|" + "\n");
             oneTble.append(res1);
             List<SqlserverColumnInfo> columnInfos = info.getColumnList();
@@ -225,7 +225,7 @@ public class WriteSqlserverMarkDown {
      * @Param [ip, dbName, port, userName, passWord]
      * @return void
      **/
-    public static void MakeMarkdownString(String ip, String dbName, String port, String userName, String passWord) {
+    public static String MakeMarkdownString(String ip, String dbName, String port, String userName, String passWord) {
         Connection connection=null;
         try {
 
@@ -237,7 +237,7 @@ public class WriteSqlserverMarkDown {
 
             List<SqlserverTabelInfo> list_table = GenerateDataBaseInfo.getTableInfo(connection,sqltabel);
             if (list_table.size() == 0) {
-                return;
+                return "";
             }
             for(SqlserverTabelInfo Ta:list_table){
                 logger.info(Ta.getTableName());
@@ -274,7 +274,7 @@ public class WriteSqlserverMarkDown {
                 Ta.setIndexInfoList(list_index);
             }
 
-            writeMarkdownString(list_table);
+            return writeMarkdownString(list_table);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -286,6 +286,7 @@ public class WriteSqlserverMarkDown {
                 e.printStackTrace();
             }
         }
+        return "";
     }
 
 
