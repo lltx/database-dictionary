@@ -63,6 +63,32 @@ public class BuildPDF {
         }
     }
 
+
+    /**
+     * 生成PDF
+     *
+     * @param ip       ：数据库连接的IP  例如：127.0.0.1 或者 localhost
+     * @param dbName   例如: test
+     * @param port     例如: 3306
+     * @param userName 例如: root
+     * @param passWord 例如: root
+     * @param filePath 例如:  D:\ideaspace\export_dbInfo\src\main\resources\
+     */
+    public static void MakeMarkDown(String ip, String dbName, String port, String userName, String passWord, String filePath) {
+        try {
+            //得到生成数据
+            String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
+            Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "mySql");
+            List<TableInfo> list = getBuildPdfTableData(getTables(connection, dbName));
+            if (list.size() == 0) {
+                return;
+            }
+            writeMarkdown(list,filePath);
+        } catch (Exception e) {
+            logger.error("生成markdown失败.......", e);
+        }
+    }
+
     public static void main(String[] args) {
         try {
 /*            //得到生成数据
