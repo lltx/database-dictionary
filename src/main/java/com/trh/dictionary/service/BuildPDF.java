@@ -83,7 +83,7 @@ public class BuildPDF {
             if (list.size() == 0) {
                 return;
             }
-            writeMarkdown(list,filePath);
+            //writeMarkdown(list, filePath);
         } catch (Exception e) {
             logger.error("生成markdown失败.......", e);
         }
@@ -568,9 +568,9 @@ public class BuildPDF {
     }
 
     /**
-     * 写markdown文件
+     * 转成markdown语法
      */
-    public static String writeMarkdown(List<TableInfo> list, String filePath) {
+    public static String writeMarkdown(List<TableInfo> list) {
         StringBuffer markdown = new StringBuffer();
         String res1 = "|:------:|:------:|:------:|:------:|:------:|:------:|" + "\n";
         int i = 1;
@@ -580,14 +580,24 @@ public class BuildPDF {
             oneTble.append(res1);
             List<ColumnInfo> columnInfos = info.getColumnList();
             //拼接列
-            for (ColumnInfo Column : columnInfos) {
+            if (columnInfos.size() > 0) {
+
+            }
+            for (int k = 0; k < columnInfos.size(); k++) {
+                ColumnInfo Column = columnInfos.get(k);
                 oneTble.append("|").append(Column.getOrder()).append("|").
                         append(Column.getName()).append("|").
                         append(Column.getType()).append("|").
                         append(Column.getIsNull()).append("|").
-                        append(Column.getDefaultValue()).append("|").
-                        append(Column.getDescription()).append("|").
-                        append("\n");
+                        append(Column.getDefaultValue()).append("|");
+                if ((k + 1) == columnInfos.size()) {
+                    oneTble.append(Column.getDescription()).append("||").
+                            append("\n");
+                } else {
+                    oneTble.append(Column.getDescription()).append("|").
+                            append("\n");
+
+                }
             }
             //拼接索引
             oneTble.append("\n");
@@ -606,7 +616,7 @@ public class BuildPDF {
             i++;
             oneTble.append("\n");
             markdown.append(oneTble);
-            createDir(filePath + "\\" + info.getTableName() + ".txt", oneTble.toString());
+            //createDir(filePath + "\\" + info.getTableName() + ".txt", oneTble.toString());
         }
         //目录
         markdown.insert(0, "[TOC]\n");

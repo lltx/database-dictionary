@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+	<!-- Editor css... -->
+	<link rel="stylesheet" href="Editor/css/editormd.css" />
+	<link rel="stylesheet" href="Editor/css/editormd.preview.min.css" />
+	<!-- Editor js -->
+	<script src="Editor/js/jquery.min.js"></script>
+	<script src="Editor/js/editormd.min.js"></script>
+	<script src="Editor/lib/marked.min.js"></script>
+	<script src="Editor/lib/prettify.min.js"></script>
+</head>
+<body>
+<h1>在线Markdown</h1>
+<!-- Editor 容器 -->
+<div class="content editormd-preview-theme" id="content">
+    <textarea style="display:none;" th:text="${markdown}"></textarea>
+</div>
+<!-- Editor markdown转html -->
+<script>
+    editormd.markdownToHTML("content",{emoji:true});
+</script>
+</body>
+</html>

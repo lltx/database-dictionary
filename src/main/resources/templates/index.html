@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"></meta>
+	<title>Insert title here</title>
+	<script src="Editor/js/jquery.min.js"></script>
+</head>
+<body>
+<form action="login.action" method="post">
+	数据库：<select name="selector">
+	<option value ="1">mysql</option>
+	<option value ="2">oracle</option>
+	<option value="3">SQL server</option>
+	<option value="4">PostgreSQL</option>
+	<option value="5">DB2</option>
+</select><br />
+	ip：<input type="text" name="ip" /><br />
+	端口号：<input type="text" name="port" /><br />
+	数据库：<input type="text" name="database" /><br />
+	用户名：<input type="text" name="username" /><br />
+	密码：<input type="password" name="password" /><br />
+	<input type="submit" value="提交" />
+</form>
+<!-- Editor markdown转html -->
+<script>
+    editormd.markdownToHTML("content",{emoji:true});
+</script>
+</body>
+</html>
