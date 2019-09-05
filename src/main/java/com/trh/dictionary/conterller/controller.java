@@ -60,7 +60,7 @@ public class controller {
             case "4":break;
             case "5":
                 try {
-                    tableInfo = Db2Executor.getDB2Tables(ip,Integer.valueOf(ip), database, username,password);
+                    tableInfo = Db2Executor.getDB2Tables(ip, Integer.valueOf(port), database.toUpperCase(), username, password);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
