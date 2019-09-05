@@ -1,6 +1,5 @@
 package com.trh.dictionary;
 
-
 import com.trh.dictionary.bean.TableInfo;
 import com.trh.dictionary.service.BuildPDF;
 import com.trh.dictionary.service.db2.Db2Executor;
@@ -54,7 +53,7 @@ public class Test {
     }
     @org.junit.Test
     public void testMakeDb2ServerPdf() throws Exception {
-        List<TableInfo> tableInfo = Db2Executor.getDB2Tables("192.168.171.230", "TEST", "db2", "system");
+        List<TableInfo> tableInfo = Db2Executor.getDB2Tables("192.168.171.230", 50000, "TEST", "db2", "system");
         if (tableInfo.size() == 0) {
             return;
         }
