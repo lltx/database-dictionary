@@ -576,7 +576,7 @@ public class BuildPDF {
         int i = 1;
         for (TableInfo info : list) {
             StringBuffer oneTble = new StringBuffer();
-            oneTble.append("##" + i + "." + info.getTableName() + "\n" + "基本信息:" + info.getDescription() + " " + info.getStorageEngine() + " " + info.getOrderType() + "\n\n" + "|序列|列名|类型|可空|默认值|注释|" + "\n");
+            oneTble.append("##" + i + "." + info.getTableName()+ " "+info.getDescription() + "\n" + "基本信息:" + info.getDescription() + " " + info.getStorageEngine() + " " + info.getOrderType() + "\n\n" + "|序列|列名|类型|可空|默认值|注释|" + "\n");
             oneTble.append(res1);
             List<ColumnInfo> columnInfos = info.getColumnList();
             //拼接列
