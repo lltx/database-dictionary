@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>index</title>
+    <title>数据字典展示</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link href="resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
@@ -70,7 +70,7 @@
                 <div id="u2" class="ax_default primary_button">
                     <div id="u2_div" class=""></div>
                     <div id="u2_text" class="text ">
-                        <p id="submit"><span>连接</span></p>
+                        <p id="submit" style="cursor:pointer"><span>连接</span></p>
                     </div>
                 </div>
 
@@ -225,8 +225,30 @@
 
 <script type="text/javascript">
     $(function () {
+        document.onkeydown=keyDownSearch;
+        function keyDownSearch(e) {
+            // 兼容FF和IE和Opera
+            var theEvent = e || window.event;
+            var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+            if (code == 13) {
+                submitFrom();
+                return false;
+            }
+            return true;
+        }
         // 为span元素绑定click事件
         $('#submit').bind("click", function () {
+            submitFrom();
+        });
+        function submitFrom() {
+            var ip = $("#u5_input").val();
+            var port = $("#u6_input").val();
+            var database = $("#u7_input").val();
+            var username = $("#u8_input").val();
+            var password = $("#u9_input").val();
+            if (ip=="主机名或IP地址"||port=="端口"||database=="数据库"||username=="用户名"||password=="密码"){
+                return alert("参数不完整!");
+            }
             var body = $("body");
             //创建表单
             var form = $("<form></form>");
@@ -238,26 +260,26 @@
             input.attr("value", $("#u12_input").val());
             form.append(input);
             var ipInput = $("<input name='ip' />");
-            ipInput.attr("value",$("#u5_input").val());
+            ipInput.attr("value",ip);
             form.append(ipInput);
             var portInput = $("<input name='port' />");
-            portInput.attr("value",$("#u6_input").val());
+            portInput.attr("value",port);
             form.append(portInput);
-            var database = $("<input name='database' />");
-            database.attr("value",$("#u7_input").val());
-            form.append(database);
-            var username = $("<input name='username' />");
-            username.attr("value",$("#u8_input").val());
-            form.append(username);
-            var password = $("<input name='password' />");
-            password.attr("value",$("#u9_input").val());
-            form.append(password);
+            var databaseInput = $("<input name='database' />");
+            databaseInput.attr("value",database);
+            form.append(databaseInput);
+            var usernameInput = $("<input name='username' />");
+            usernameInput.attr("value",username);
+            form.append(usernameInput);
+            var passwordInput = $("<input name='password' />");
+            passwordInput.attr("value",password);
+            form.append(passwordInput);
             form.hide();
             body.append(form);
             //提交表单
             form.submit();
             form.remove();
-        });
+        }
     })
 </script>
 

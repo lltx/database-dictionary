@@ -237,7 +237,7 @@ public class WriteSqlserverMarkDown {
 
             List<SqlserverTabelInfo> list_table = GenerateDataBaseInfo.getTableInfo(connection,sqltabel);
             if (list_table.size() == 0) {
-                return "";
+                return "## 数据库无数据";
             }
             for(SqlserverTabelInfo Ta:list_table){
                 logger.info(Ta.getTableName());

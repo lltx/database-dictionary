@@ -35,7 +35,11 @@ public class Test {
     public  void  testMakePgSqlPdf(){
         String  FILE_DIR = "F:/pdf/";
         //生成PDF文件
-        BuildPgSqlPdf.buildPdf("192.168.161.3", "mydata", "54321", "postgres", "root",FILE_DIR,"mydata");
+        try {
+            BuildPgSqlPdf.buildPdf("192.168.161.3", "mydata", "54321", "postgres", "root",FILE_DIR,"mydata");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //生成MARKDOWN文件
 //        BuildPDF.MakeMarkDown("localhost", "cd_core", "3306", "root", "root",FILE_DIR);
     }

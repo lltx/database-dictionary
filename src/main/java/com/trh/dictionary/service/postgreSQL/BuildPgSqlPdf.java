@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class BuildPgSqlPdf {
     static Logger logger = LoggerFactory.getLogger(BuildPgSqlPdf.class);
-    public static void buildPdf(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName) {
+    public static void buildPdf(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName)throws Exception {
         //得到生成数据
         String url = "jdbc:postgresql://" + ip + ":" + port + "/" + dbName;
         Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "pgSql");
@@ -156,13 +156,13 @@ public class BuildPgSqlPdf {
         return BuildPDF.dest(key,"\"");
     }
 
-    public static String getPgMarkdown(String ip, String dbName, String port, String userName, String passWord){
+    public static String getPgMarkdown(String ip, String dbName, String port, String userName, String passWord)throws Exception{
         //得到生成数据
         String url = "jdbc:postgresql://" + ip + ":" + port + "/" + dbName;
         Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "pgSql");
         List<TableInfo> list = getBuildPdfTableData(connection);
         if (list.size() == 0) {
-            return "数据库无数据";
+            return "## 数据库无数据";
         }
         return BuildPDF.writeMarkdown(list);
     }
