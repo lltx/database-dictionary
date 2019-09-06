@@ -4,6 +4,7 @@ import com.trh.dictionary.bean.TableInfo;
 import com.trh.dictionary.service.BuildPDF;
 import com.trh.dictionary.service.db2.Db2Executor;
 import com.trh.dictionary.service.oracleservice.OracleDatabase;
+import com.trh.dictionary.service.postgreSQL.BuildPgSqlPdf;
 import com.trh.dictionary.service.sqlserver.BuildSqlserverPDF;
 import com.trh.dictionary.service.sqlserver.WriteSqlserverMarkDown;
 import org.apache.commons.io.FileUtils;
@@ -29,6 +30,17 @@ public class Test {
         //生成MARKDOWN文件
         BuildPDF.MakeMarkDown("localhost", "cd_core", "3306", "root", "root",FILE_DIR);
     }
+
+    @org.junit.Test
+    public  void  testMakePgSqlPdf(){
+        String  FILE_DIR = "F:/pdf/";
+        //生成PDF文件
+        BuildPgSqlPdf.buildPdf("192.168.161.3", "mydata", "54321", "postgres", "root",FILE_DIR,"mydata");
+        //生成MARKDOWN文件
+//        BuildPDF.MakeMarkDown("localhost", "cd_core", "3306", "root", "root",FILE_DIR);
+    }
+
+
 
     @org.junit.Test
     public  void  testMakeSqlServerPdf(){
