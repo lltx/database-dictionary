@@ -31,11 +31,11 @@ public class DatabaseController {
     public String oracleMarkdown(Model model) {
         List<TableInfo> tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//127.0.0.1:1521/orcl", "root", "123456");
         if (tableInfo.size() == 0) {
-            return "/index";
+            return "index";
         }
         String markdown = BuildPDF.writeMarkdown(tableInfo);
         model.addAttribute("markdown", markdown);
-        return "/index1";
+        return "index1";
     }
 
     @RequestMapping("/login.action")
@@ -55,11 +55,11 @@ public class DatabaseController {
                 case "SQL server":
                     model.addAttribute("markdown", WriteSqlserverMarkDown.MakeMarkdownString(ip, database, port, username, password));
 
-                    return "/markdown";
+                    return "markdown";
 
                 case "PostgreSQL":
                     model.addAttribute("markdown", BuildPgSqlPdf.getPgMarkdown(ip, database, port, username, password));
-                    return "/markdown";
+                    return "markdown";
                 case "DB2":
                     tableInfo = Db2Executor.getDB2Tables(ip, Integer.valueOf(port), database.toUpperCase(), username, password);
                     break;
@@ -67,16 +67,16 @@ public class DatabaseController {
             if (tableInfo!=null){
                 if (tableInfo.size() == 0) {
                     model.addAttribute("markdown", "## 数据库无数据");
-                    return "/markdown";
+                    return "markdown";
                 }
             }
             String markdown = BuildPDF.writeMarkdown(tableInfo);
             model.addAttribute("markdown", markdown);
-            return "/markdown";
+            return "markdown";
         } catch (Exception e) {
             logger.error("error==>"+e);
             model.addAttribute("markdown", "### "+e.getMessage());
-            return "/markdown";
+            return "markdown";
         }
     }
 }
