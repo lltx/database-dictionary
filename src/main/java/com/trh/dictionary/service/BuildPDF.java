@@ -83,7 +83,7 @@ public class BuildPDF {
             if (list.size() == 0) {
                 return;
             }
-            //writeMarkdown(list, filePath);
+            writeMarkdown(list, filePath);
         } catch (Exception e) {
             logger.error("生成markdown失败.......", e);
         }
