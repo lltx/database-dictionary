@@ -123,9 +123,9 @@ public class BuildPgSqlPdf {
                 columnInfo.setType(resultSet1.getString(2));
                 boolean isNull = resultSet1.getString(4).equals("t");
                 if (isNull){
-                    columnInfo.setIsNull("YES");
-                }else {
                     columnInfo.setIsNull("NO");
+                }else {
+                    columnInfo.setIsNull("YES");
                 }
 
                 columnInfo.setDefaultValue(resultSet1.getString(5));
