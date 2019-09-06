@@ -5,6 +5,7 @@ import com.trh.dictionary.dao.ConnectionFactory;
 import com.trh.dictionary.service.BuildPDF;
 import com.trh.dictionary.service.db2.Db2Executor;
 import com.trh.dictionary.service.oracleservice.OracleDatabase;
+import com.trh.dictionary.service.postgreSQL.BuildPgSqlPdf;
 import com.trh.dictionary.service.sqlserver.WriteSqlserverMarkDown;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
@@ -55,7 +56,9 @@ public class controller {
 
                 return "/markdown";
 
-            case "PostgreSQL":break;
+            case "PostgreSQL":
+                model.addAttribute("markdown",BuildPgSqlPdf.getPgMarkdown(ip, database, port, username, password));
+                return "/markdown";
             case "DB2":
                 try {
                     tableInfo = Db2Executor.getDB2Tables(ip, Integer.valueOf(port), database.toUpperCase(), username, password);
