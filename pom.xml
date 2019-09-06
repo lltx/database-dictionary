@@ -7,6 +7,13 @@
     <groupId>com.trh</groupId>
     <artifactId>database-dictionary</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
         <dependency>
@@ -59,7 +66,6 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>7.2.2.jre8</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -91,7 +97,18 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.trh.dictionary</groupId>
             <artifactId>db2jcc-db2jcc4</artifactId>
@@ -100,5 +117,95 @@
             <systemPath>${project.basedir}/src/main/resources/lib/db2jcc-db2jcc4.jar</systemPath>
         </dependency>
     </dependencies>
-
+    <!--<build>
+        <resources>&lt;!&ndash; 使用@@站位符，输出Dockerfile至docker文件夹 &ndash;&gt;
+            <resource>
+                <directory>src/main/docker</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/Dockerfile</include>
+                </includes>
+                <targetPath>../docker</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>&lt;!&ndash; 置顶 &ndash;&gt;
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>tag-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>tag</goal>
+                        </goals>
+                        <configuration>
+                            <image>${docker.registry.name}/${project.artifactId}:${project.version}</image>
+                            <newName>
+                                ${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}
+                            </newName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>push-image</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                        <configuration>
+                            <imageName>
+                                ${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}
+                            </imageName>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    &lt;!&ndash; 私有仓库配置，需要settings.xml文件配合serverId对应的服务地址 &ndash;&gt;
+                    <serverId>docker-aliyun</serverId>
+                    <registryUrl>registry.cn-hangzhou.aliyuncs.com</registryUrl>
+                    &lt;!&ndash; <forceTags>true</forceTags> &ndash;&gt;
+                    &lt;!&ndash;install阶段也上传，否则只有deploy阶段上传&ndash;&gt;
+                    <pushImage>true</pushImage>
+                    <dockerDirectory>target/docker</dockerDirectory>
+                    <imageName>
+                        ${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}
+                    </imageName>
+                    <imageTags>
+                        &lt;!&ndash;docker的tag为项目版本号、latest&ndash;&gt;
+                        <imageTag>${git.commit.id.abbrev}</imageTag>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <resources>
+                        <rescource>&lt;!&ndash; 将打包文件放入dockerDirectory指定的位置 &ndash;&gt;
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </rescource>
+                        &lt;!&ndash; 输出Dockerfile至docker文件夹,如果不使用占位符,可使用以下配置 &ndash;&gt;
+                        &lt;!&ndash;
+                        <resource>
+                            <directory>src/main/docker</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>**/Dockerfile</include>
+                            </includes>
+                            <targetPath>../docker</targetPath>
+                        </resource>
+                        &ndash;&gt;
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>-->
 </project>

@@ -83,7 +83,7 @@ public class BuildPDF {
             if (list.size() == 0) {
                 return;
             }
-            writeMarkdown(list,filePath);
+            //writeMarkdown(list, filePath);
         } catch (Exception e) {
             logger.error("生成markdown失败.......", e);
         }
@@ -566,6 +566,63 @@ public class BuildPDF {
         }
         return table;
     }
+
+    /**
+     * 转成markdown语法
+     */
+    public static String writeMarkdown(List<TableInfo> list) {
+        StringBuffer markdown = new StringBuffer();
+        String res1 = "|:------:|:------:|:------:|:------:|:------:|:------:|" + "\n";
+        int i = 1;
+        for (TableInfo info : list) {
+            StringBuffer oneTble = new StringBuffer();
+            oneTble.append("##" + i + "." + info.getTableName()+ " "+info.getDescription() + "\n" + "基本信息:" + info.getDescription() + " " + info.getStorageEngine() + " " + info.getOrderType() + "\n\n" + "|序列|列名|类型|可空|默认值|注释|" + "\n");
+            oneTble.append(res1);
+            List<ColumnInfo> columnInfos = info.getColumnList();
+            //拼接列
+            if (columnInfos.size() > 0) {
+
+            }
+            for (int k = 0; k < columnInfos.size(); k++) {
+                ColumnInfo Column = columnInfos.get(k);
+                oneTble.append("|").append(Column.getOrder()).append("|").
+                        append(Column.getName()).append("|").
+                        append(Column.getType()).append("|").
+                        append(Column.getIsNull()).append("|").
+                        append(Column.getDefaultValue()).append("|");
+                if ((k + 1) == columnInfos.size()) {
+                    oneTble.append(Column.getDescription()).append("||").
+                            append("\n");
+                } else {
+                    oneTble.append(Column.getDescription()).append("|").
+                            append("\n");
+
+                }
+            }
+            //拼接索引
+            oneTble.append("\n");
+            oneTble.append("|序列|索引名|类型|包含字段|" + "\n");
+            oneTble.append("|:------:|:------:|:------:|:------:|" + "\n");
+            List<IndexInfo> indexInfolist = info.getIndexInfoList();
+            int j = 1;
+            for (IndexInfo indexInfo : indexInfolist) {
+                oneTble.append("|").append(j).append("|").
+                        append(indexInfo.getName()).append("|").
+                        append(indexInfo.getType()).append("|").
+                        append(indexInfo.getContainKey()).append("|").
+                        append("\n");
+                j++;
+            }
+            i++;
+            oneTble.append("\n");
+            markdown.append(oneTble);
+            //createDir(filePath + "\\" + info.getTableName() + ".txt", oneTble.toString());
+        }
+        //目录
+        markdown.insert(0, "[TOC]\n");
+        return markdown.toString();
+    }
+
 
     /**
      * 写markdown文件
