@@ -221,7 +221,7 @@ public class Db2Executor {
             throw new SQLException("connection can not be null");
         }
         String sql = " select SCHEMANAME,owner,CREATE_TIME from syscat.schemata WHERE OWNERTYPE = 'U' ";
-        List<String> schemas = new ArrayList<String>();
+        List<String> schemas = new ArrayList<>();
         Statement statement = conn.createStatement();
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
@@ -230,6 +230,7 @@ public class Db2Executor {
                 schemas.add(schema);
             }
         }
+        SqlExecutor.releaseResource(null, null, rs, statement);
         return schemas;
     }
 }
