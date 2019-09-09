@@ -213,13 +213,16 @@ public class Db2Executor {
     /**
      * 获取数据库实例集合
      *
-     * @param connection
+     * @param conn
      * @return
      */
-    public List<String> databases(Connection connection) throws SQLException {
+    public List<String> databases(Connection conn) throws SQLException {
+        if (null == conn) {
+            throw new SQLException("connection can not be null");
+        }
         String sql = " select SCHEMANAME,owner,CREATE_TIME from syscat.schemata WHERE OWNERTYPE = 'U' ";
         List<String> schemas = new ArrayList<String>();
-        Statement statement = connection.createStatement();
+        Statement statement = conn.createStatement();
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
             String schema = rs.getString("SCHEMANAME");
