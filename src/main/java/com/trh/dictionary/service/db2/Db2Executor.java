@@ -230,6 +230,7 @@ public class Db2Executor {
                 schemas.add(schema);
             }
         }
+        SqlExecutor.releaseResource(null, null, rs, statement);
         return schemas;
     }
 }
