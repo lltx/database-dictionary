@@ -4,6 +4,7 @@ import com.mysql.jdbc.StringUtils;
 import com.trh.dictionary.bean.ColumnInfo;
 import com.trh.dictionary.bean.IndexInfo;
 import com.trh.dictionary.bean.TableInfo;
+import com.trh.dictionary.dao.ConnectionFactory;
 import com.trh.dictionary.util.SqlExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +175,7 @@ public class Db2Executor {
         return 0;
     }
 
-    public static List<TableInfo> getDB2Tables(String host, int port,  String schema, String user, String password) throws SQLException, ClassNotFoundException {
+    public static List<TableInfo> getDB2Tables(String host, int port, String schema, String user, String password) throws SQLException, ClassNotFoundException {
         Connection connection = SqlExecutor.newDB2Connection(host, port, schema, user, password);
         List<TableInfo> db2Tables = getDB2Tables(connection, schema);
         return db2Tables;
@@ -207,5 +208,25 @@ public class Db2Executor {
         }
         SqlExecutor.releaseResource(null, null, rs, null);
         return tables;
+    }
+
+    /**
+     * 获取数据库实例集合
+     *
+     * @param connection
+     * @return
+     */
+    public List<String> databases(Connection connection) throws SQLException {
+        String sql = " select SCHEMANAME,owner,CREATE_TIME from syscat.schemata WHERE OWNERTYPE = 'U' ";
+        List<String> schemas = new ArrayList<String>();
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(sql);
+        while (rs.next()) {
+            String schema = rs.getString("SCHEMANAME");
+            if (!StringUtils.isNullOrEmpty(schema)) {
+                schemas.add(schema);
+            }
+        }
+        return schemas;
     }
 }
