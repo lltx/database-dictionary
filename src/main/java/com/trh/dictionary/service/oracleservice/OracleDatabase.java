@@ -21,7 +21,7 @@ public class OracleDatabase {
     private static String driver = "oracle.jdbc.driver.OracleDriver";
 
     //得到表信息
-    public static List<TableInfo> getTableInfo(String url,String username,String password) {
+    public static List<TableInfo> getTableInfo(String url, String username, String password) throws Exception {
         List<TableInfo> list = new ArrayList<TableInfo>();
         PreparedStatement pstmt;
         Connection conn = null;
@@ -41,7 +41,7 @@ public class OracleDatabase {
                 //得到表的注释
                 String COMMENTS = rs.getString("COMMENTS");
                 //通过表名查询主键索引名和列名
-                PreparedStatement constraintNamePstmt = conn.prepareStatement("select cu.constraint_name,cu.column_name from user_cons_columns cu LEFT JOIN user_constraints au ON cu.constraint_name = au.constraint_name WHERE au.constraint_type = 'P' and au.table_name = '"+tableName+"'");
+                PreparedStatement constraintNamePstmt = conn.prepareStatement("select cu.constraint_name,cu.column_name from user_cons_columns cu LEFT JOIN user_constraints au ON cu.constraint_name = au.constraint_name WHERE au.constraint_type = 'P' and au.table_name = '" + tableName + "'");
                 ResultSet index_name = constraintNamePstmt.executeQuery();
                 String stringName = "";
                 String column_name = "";
@@ -52,7 +52,7 @@ public class OracleDatabase {
                 constraintNamePstmt.close();
                 //通过表名查询所有的列数据
                 PreparedStatement columnIdPstmt = conn.prepareStatement("SELECT T.column_id,T.column_name,T.data_type,T.data_default,T.nullable,b.comments\n" +
-                        "FROM USER_TAB_COLUMNS T LEFT JOIN user_col_comments b ON T.TABLE_NAME =b.table_name AND T.COLUMN_NAME =b.column_name  WHERE T.TABLE_NAME ='"+tableName+"'");
+                        "FROM USER_TAB_COLUMNS T LEFT JOIN user_col_comments b ON T.TABLE_NAME =b.table_name AND T.COLUMN_NAME =b.column_name  WHERE T.TABLE_NAME ='" + tableName + "'");
                 ResultSet columnRs = columnIdPstmt.executeQuery();
                 List<ColumnInfo> listColumn = new ArrayList<ColumnInfo>();
                 while (columnRs.next()) {
@@ -89,13 +89,13 @@ public class OracleDatabase {
                 }
                 //查询表的索引说明
                 PreparedStatement rownumPstmt = conn.prepareStatement("SELECT rownum,rs.* FROM ( select t.index_name, i.index_type,listagg(t.column_name,',') within group (order by t.index_name) col_name from user_ind_columns t,user_indexes i where t.index_name = i.index_name " +
-                        "and t.table_name = i.table_name and t.table_name = '"+tableName+"' GROUP BY t.index_name, i.index_type) rs ");
+                        "and t.table_name = i.table_name and t.table_name = '" + tableName + "' GROUP BY t.index_name, i.index_type) rs ");
                 ResultSet IndexRs = rownumPstmt.executeQuery();
                 List<IndexInfo> listIndex = new ArrayList<IndexInfo>();
                 while (IndexRs.next()) {
                     IndexInfo indexInfo = new IndexInfo();
                     String indexRsString = IndexRs.getString(2);
-                    if(stringName.equalsIgnoreCase(indexRsString)){
+                    if (stringName.equalsIgnoreCase(indexRsString)) {
                         indexInfo.setIsIndex(1);
                     }
                     indexInfo.setOrder(IndexRs.getInt(1));
@@ -117,10 +117,8 @@ public class OracleDatabase {
             }
             rs.close();
             pstmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            if(conn!=null){
+        } finally {
+            if (conn != null) {
                 try {
                     //关闭链接
                     conn.close();
