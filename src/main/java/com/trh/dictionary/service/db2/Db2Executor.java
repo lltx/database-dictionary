@@ -216,7 +216,7 @@ public class Db2Executor {
      * @param conn
      * @return
      */
-    public List<String> databases(Connection conn) throws SQLException {
+    public static List<String> databases(Connection conn) throws SQLException {
         if (null == conn) {
             throw new SQLException("connection can not be null");
         }

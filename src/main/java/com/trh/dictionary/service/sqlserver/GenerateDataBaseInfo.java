@@ -19,6 +19,26 @@ import java.util.List;
  */
 public class GenerateDataBaseInfo {
 
+
+    /*
+     * @Author zhou
+     * @Description 所有用户库
+     * @Date 10:58 2019/9/9
+     * @Param [connection, sqlTableInfo]
+     * @return java.util.List<java.lang.String>
+     **/
+    public static List<String> getDataBaseList(Connection connection, String sqlTableInfo) throws Exception {
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sqlTableInfo);
+        List<String> list = new ArrayList<>();
+        while (resultSet.next()) {
+            list.add(resultSet.getString("name"));
+        }
+        resultSet.close();
+        statement.close();
+        return list;
+    }
+
     /*
      * @Author zhou
      * @Description 生成数据库表名
@@ -67,7 +87,13 @@ public class GenerateDataBaseInfo {
             sqlserverColumnInfo.setIs_null(resultSet.getString("is_null"));
             sqlserverColumnInfo.setDefault_value(resultSet.getString("default_value"));
             sqlserverColumnInfo.setDecs(resultSet.getString("decs"));
-            sqlserverColumnInfo.setClass_desc(resultSet.getString("class_desc"));
+            String class_desc=resultSet.getString("class_desc");
+            if("INDEX".equals(class_desc)){
+                continue;
+            }else{
+                sqlserverColumnInfo.setClass_desc(resultSet.getString("class_desc"));
+            }
+
             list.add(sqlserverColumnInfo);
         }
         resultSet.close();

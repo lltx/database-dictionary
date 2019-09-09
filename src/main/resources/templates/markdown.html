@@ -15,12 +15,12 @@
 <body>
 <div>
     <h1>在线Markdown</h1>
+	<span>数据库：</span><select id="DatabaseName">
+</select>
     <a id="export" href="/download" style="float:right">下载PDF</a>
 </div>
 <!-- Editor 容器 -->
 <div class="content editormd-preview-theme" id="content">
-	<select id="DatabaseName">
-	</select>
     <textarea id="markdown" style="display:none;" th:text="${markdown}"></textarea>
 </div>
 <!-- Editor markdown转html -->
@@ -42,12 +42,14 @@
         data.password=password;
         data.selector=selector;
         console.info(data);
-        var url="/getDataBaseNmaeList";
+        var url="/getDataBaseNameList";
         $.post(url,data,function(result){
             console.info(result);
             $.each(result,function(i){
                 $("#DatabaseName").append("<option value ="+result[i]+">"+result[i]+"</option>")
             })
+
+            $("#DatabaseName").find("option[value='"+database+"']").attr("selected",true);
         });
 
     }
@@ -60,6 +62,10 @@
         var username=sessionStorage.getItem("username");
         var password=sessionStorage.getItem("password");
         var selector=sessionStorage.getItem("selector");
+
+        var d=document.getElementById("export");
+        d.href="/download?ip="+ip+"&port="+port+"&database="+database+"&username="+username+"&password="+password+"&selector="+selector;
+
         var data={}
         data.ip=ip;
         data.port=port;
@@ -67,10 +73,9 @@
         data.username=username;
         data.password=password;
         data.selector=selector;
-        console.info(data);
         var url="/getMarkdownString";
         $.post(url,data,function(result){
-            console.info(result);
+            $("#content").html('<textarea id="markdown" style="display:none;"></textarea>');
             $('#markdown').val("");
             $('#markdown').val(result);
             editormd.markdownToHTML("content",{emoji:true});

@@ -29,9 +29,9 @@ public class SqlserverColumnInfo {
 
     private String default_value= "";//默认值
 
-    private String decs= "";//说明
+    private String decs= " ";//说明
 
-    private String class_desc= "";
+    private String class_desc= " ";
 
     public String getTable_name() {
         return table_name;

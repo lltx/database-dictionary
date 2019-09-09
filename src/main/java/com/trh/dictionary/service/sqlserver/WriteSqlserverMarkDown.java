@@ -57,7 +57,7 @@ public class WriteSqlserverMarkDown {
                         "SELECT COUNT (*) FROM sysobjects WHERE (name IN (\n" +
                         "SELECT name FROM sysindexes WHERE (id=a.id) AND (indid IN (\n" +
                         "SELECT indid FROM sysindexkeys WHERE (id=a.id) AND (colid IN (\n" +
-                        "SELECT colid FROM syscolumns WHERE (id=a.id) AND (name=a.name))))))) AND (xtype='PK'))> 0 THEN 'YES' ELSE '' END) p_k,b.name type,a.length occupied_num,COLUMNPROPERTY(a.id,a.name,'PRECISION') AS length,isnull(COLUMNPROPERTY(a.id,a.name,'Scale'),0) AS scale,(CASE WHEN a.isnullable=1 THEN 'YES' ELSE '' END) is_null,isnull(e.text,'') default_value,isnull(g.[value],' ') AS decs,isnull(g.[class_desc],' ') AS class_desc FROM syscolumns a LEFT JOIN systypes b ON a.xtype=b.xusertype INNER JOIN sysobjects d ON a.id=d.id AND d.xtype='U' AND d.name<> 'dtproperties' LEFT JOIN syscomments e ON a.cdefault=e.id LEFT JOIN sys.extended_properties g ON a.id=g.major_id AND a.colid=g.minor_id LEFT JOIN sys.extended_properties f ON d.id=f.class AND f.minor_id=0 WHERE d.name ='"+Ta.getTableName()+"' AND g.class_desc!='INDEX'";
+                        "SELECT colid FROM syscolumns WHERE (id=a.id) AND (name=a.name))))))) AND (xtype='PK'))> 0 THEN 'YES' ELSE '' END) p_k,b.name type,a.length occupied_num,COLUMNPROPERTY(a.id,a.name,'PRECISION') AS length,isnull(COLUMNPROPERTY(a.id,a.name,'Scale'),0) AS scale,(CASE WHEN a.isnullable=1 THEN 'YES' ELSE '' END) is_null,isnull(e.text,'') default_value,isnull(g.[value],' ') AS decs,isnull(g.[class_desc],' ') AS class_desc FROM syscolumns a LEFT JOIN systypes b ON a.xtype=b.xusertype INNER JOIN sysobjects d ON a.id=d.id AND d.xtype='U' AND d.name<> 'dtproperties' LEFT JOIN syscomments e ON a.cdefault=e.id LEFT JOIN sys.extended_properties g ON a.id=g.major_id AND a.colid=g.minor_id LEFT JOIN sys.extended_properties f ON d.id=f.class AND f.minor_id=0 WHERE d.name ='"+Ta.getTableName()+"'";
                 try {
                     list_column=GenerateDataBaseInfo.getColumnInfo(connection,sqlcolumn);
                     for(SqlserverColumnInfo s:list_column){
@@ -247,7 +247,7 @@ public class WriteSqlserverMarkDown {
                         "SELECT COUNT (*) FROM sysobjects WHERE (name IN (\n" +
                         "SELECT name FROM sysindexes WHERE (id=a.id) AND (indid IN (\n" +
                         "SELECT indid FROM sysindexkeys WHERE (id=a.id) AND (colid IN (\n" +
-                        "SELECT colid FROM syscolumns WHERE (id=a.id) AND (name=a.name))))))) AND (xtype='PK'))> 0 THEN 'YES' ELSE '' END) p_k,b.name type,a.length occupied_num,COLUMNPROPERTY(a.id,a.name,'PRECISION') AS length,isnull(COLUMNPROPERTY(a.id,a.name,'Scale'),0) AS scale,(CASE WHEN a.isnullable=1 THEN 'YES' ELSE '' END) is_null,isnull(e.text,'') default_value,isnull(g.[value],' ') AS decs,isnull(g.[class_desc],' ') AS class_desc FROM syscolumns a LEFT JOIN systypes b ON a.xtype=b.xusertype INNER JOIN sysobjects d ON a.id=d.id AND d.xtype='U' AND d.name<> 'dtproperties' LEFT JOIN syscomments e ON a.cdefault=e.id LEFT JOIN sys.extended_properties g ON a.id=g.major_id AND a.colid=g.minor_id LEFT JOIN sys.extended_properties f ON d.id=f.class AND f.minor_id=0 WHERE d.name ='"+Ta.getTableName()+"' AND g.class_desc!='INDEX'";
+                        "SELECT colid FROM syscolumns WHERE (id=a.id) AND (name=a.name))))))) AND (xtype='PK'))> 0 THEN 'YES' ELSE '' END) p_k,b.name type,a.length occupied_num,COLUMNPROPERTY(a.id,a.name,'PRECISION') AS length,isnull(COLUMNPROPERTY(a.id,a.name,'Scale'),0) AS scale,(CASE WHEN a.isnullable=1 THEN 'YES' ELSE '' END) is_null,isnull(e.text,'') default_value,isnull(g.[value],' ') AS decs,isnull(g.[class_desc],' ') AS class_desc FROM syscolumns a LEFT JOIN systypes b ON a.xtype=b.xusertype INNER JOIN sysobjects d ON a.id=d.id AND d.xtype='U' AND d.name<> 'dtproperties' LEFT JOIN syscomments e ON a.cdefault=e.id LEFT JOIN sys.extended_properties g ON a.id=g.major_id AND a.colid=g.minor_id LEFT JOIN sys.extended_properties f ON d.id=f.class AND f.minor_id=0 WHERE d.name ='"+Ta.getTableName()+"'";
                 try {
                     list_column=GenerateDataBaseInfo.getColumnInfo(connection,sqlcolumn);
                     for(SqlserverColumnInfo s:list_column){
@@ -288,6 +288,35 @@ public class WriteSqlserverMarkDown {
         }
         return "";
     }
+
+    /*
+     * @Author zhou
+     * @Description 数据库名称
+     * @Date 11:00 2019/9/9
+     * @Param [ip, dbName, port, userName, passWord]
+     * @return java.util.List<java.lang.String>
+     **/
+    public static List<String> getDatabasesList(String ip, String dbName, String port, String userName, String passWord) {
+        Connection connection=null;
+        List<String> list = new ArrayList<>();
+        try {
+            String dbURL="jdbc:sqlserver://"+ip+":"+port+";DatabaseName="+dbName+";";
+            connection = SqlserverConnectionFactory.getConnection(dbURL, userName,passWord);
+            String sqltabel="select name from sysdatabases where name not in('master','model','msdb','tempdb');";
+            list = GenerateDataBaseInfo.getDataBaseList(connection,sqltabel);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
 
 
 }
