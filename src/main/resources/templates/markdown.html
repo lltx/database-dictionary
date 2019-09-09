@@ -16,11 +16,67 @@
 <h1>在线Markdown</h1>
 <!-- Editor 容器 -->
 <div class="content editormd-preview-theme" id="content">
-    <textarea style="display:none;" th:text="${markdown}"></textarea>
+	<select id="DatabaseName">
+	</select>
+    <textarea id="markdown" style="display:none;" th:text="${markdown}"></textarea>
 </div>
 <!-- Editor markdown转html -->
+<script type="text/javascript">
+    window.onload = function(){
+        var ip=sessionStorage.getItem("ip");
+        var port=sessionStorage.getItem("port");
+        var database=sessionStorage.getItem("database");
+        var username=sessionStorage.getItem("username");
+        var password=sessionStorage.getItem("password");
+        var selector=sessionStorage.getItem("selector");
+        var data={}
+        data.ip=ip;
+        data.port=port;
+        data.database=database;
+        data.username=username;
+        data.password=password;
+        data.selector=selector;
+        console.info(data);
+        var url="/getDataBaseNmaeList";
+        $.post(url,data,function(result){
+            console.info(result);
+            $.each(result,function(i){
+                $("#DatabaseName").append("<option value ="+result[i]+">"+result[i]+"</option>")
+            })
+        });
+
+    }
+    $("#DatabaseName").bind("change",function(){
+
+        var ip=sessionStorage.getItem("ip");
+        var port=sessionStorage.getItem("port");
+        var database=$("#DatabaseName").val()
+        sessionStorage.setItem("database",database);
+        var username=sessionStorage.getItem("username");
+        var password=sessionStorage.getItem("password");
+        var selector=sessionStorage.getItem("selector");
+        var data={}
+        data.ip=ip;
+        data.port=port;
+        data.database=database;
+        data.username=username;
+        data.password=password;
+        data.selector=selector;
+        console.info(data);
+        var url="/getMarkdownString";
+        $.post(url,data,function(result){
+            console.info(result);
+            $('#markdown').val("");
+            $('#markdown').val(result);
+            editormd.markdownToHTML("content",{emoji:true});
+        });
+
+    });
+</script>
 <script>
     editormd.markdownToHTML("content",{emoji:true});
 </script>
+
+
 </body>
 </html>

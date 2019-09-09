@@ -246,9 +246,17 @@
             var database = $("#u7_input").val();
             var username = $("#u8_input").val();
             var password = $("#u9_input").val();
+            var selector = $("#u12_input").val();
             if (ip=="主机名或IP地址"||port=="端口"||database=="数据库"||username=="用户名"||password=="密码"){
                 return alert("参数不完整!");
             }
+
+            sessionStorage.setItem("ip", ip);
+            sessionStorage.setItem("port", port);
+            sessionStorage.setItem("database", database);
+            sessionStorage.setItem("username", username);
+            sessionStorage.setItem("password", password);
+            sessionStorage.setItem("selector",selector)
             var body = $("body");
             //创建表单
             var form = $("<form></form>");
