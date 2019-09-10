@@ -146,8 +146,7 @@ public class DatabaseController {
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public void testDownload(HttpServletResponse res, String selector, String ip, String port, String password, String username, String database) {
         //1.先生成pdf文件
-        String filePath = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "").replaceAll("target/test-classes/", "");
-        filePath += "src/main/resources/";
+        String filePath = System.getProperty("user.dir");
         try {
             switch (selector) {
                 case "mysql":
