@@ -134,7 +134,7 @@ public class BuildPDF {
         try {
             //获取表名
             statement = connection.createStatement();
-            String sql = "SHOW  TABLES FROM `" + dbName + "`";
+            String sql = "show full tables FROM `" + dbName + "`"+"where Table_type = 'BASE TABLE'";
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 Map<String, Object> resMap = new HashMap<String, Object>(2);
