@@ -1095,7 +1095,7 @@ public class BuildPDF {
             indexEvent.setBody(true);
             document.add(c);
         }
-        document.close();
+//        document.close();
         return document;
     }
 
