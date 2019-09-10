@@ -89,7 +89,7 @@
             <artifactId>ojdbc6</artifactId>
             <version>8</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/ojdbc8.jar</systemPath>
+            <systemPath>${project.basedir}/lib/ojdbc8.jar</systemPath>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
@@ -122,6 +122,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -140,12 +143,12 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
+<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 
