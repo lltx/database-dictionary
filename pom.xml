@@ -110,12 +110,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.trh.dictionary</groupId>
-            <artifactId>db2jcc-db2jcc4</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/db2jcc-db2jcc4.jar</systemPath>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>jcc</artifactId>
+            <version>11.5.0.0</version>
         </dependency>
+
     </dependencies>
 
     <build>
