@@ -220,7 +220,7 @@ public class Db2Executor {
         if (null == conn) {
             throw new SQLException("connection can not be null");
         }
-        String sql = " select SCHEMANAME,owner,CREATE_TIME from syscat.schemata WHERE OWNERTYPE = 'U' ";
+        String sql = " select SCHEMANAME, OWNER, CREATE_TIME from syscat.schemata WHERE OWNERTYPE = 'U' ";
         List<String> schemas = new ArrayList<>();
         Statement statement = conn.createStatement();
         ResultSet rs = statement.executeQuery(sql);
