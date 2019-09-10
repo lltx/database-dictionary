@@ -967,7 +967,6 @@ public class BuildPDF {
             indexEvent.setBody(true);
             document.add(c);
         }
-
         document.close();
         os.close();
     }
@@ -982,4 +981,149 @@ public class BuildPDF {
         }
         return false;
     }
+
+
+    public static Document getDocumentBuild(String FILE_DIR, List<TableInfo> tableInfos, String pdfName) throws Exception {
+        BaseFont bfChinese = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+        Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
+        // 设置类型，加粗
+        font.setStyle(Font.NORMAL);
+        Font cnFont = getChineseFontAsStyle(BaseColor.BLACK, 16);
+        //页面大小
+        Rectangle rect = new Rectangle(PageSize.A4).rotate();
+        //页面背景色
+        rect.setBackgroundColor(new BaseColor(0xFF, 0xFF, 0xDE));
+        //设置边框颜色
+        rect.setBorderColor(new BaseColor(0xFF, 0xFF, 0xDE));
+        Document doc = new Document(rect);
+        PdfWriter contentWriter = PdfWriter.getInstance(doc, new ByteArrayOutputStream());
+        //设置事件
+        ContentEvent event = new ContentEvent();
+        contentWriter.setPageEvent(event);
+        //存目录监听 开始
+        doc.open();
+        int order = 1;
+        List<Chapter> chapterList = new ArrayList<Chapter>();
+        //根据chapter章节分页
+        //表格
+        //设置表格模板
+        String[] tableHeader = {"序列", "列名", "类型", "可空", "默认值", "注释"};
+        String[] indexHeader = {"序列", "索引名", "类型", "包含字段"};
+        for (TableInfo tableInfo : tableInfos) {
+            tableInfo = setIsIndex(tableInfo);
+            Chapter chapter = new Chapter(new Paragraph(tableInfo.getTableName()), order);
+            //设置跳转地址
+            Phrase point = new Paragraph("基本信息:", cnFont);
+            Anchor tome = new Anchor(point);
+            tome.setName(tableInfo.getTableName());
+            Phrase engine = new Phrase("  " + tableInfo.getStorageEngine(), font);
+            Phrase type = new Phrase(" " + tableInfo.getOrderType(), font);
+            Phrase description = new Phrase(" " + tableInfo.getDescription() + "\n\n", getChineseFontAsStyle(BaseColor.BLACK, 16));
+            //组装基本数据
+            Paragraph contentInfo = new Paragraph();
+            contentInfo.add(tome);
+            contentInfo.add(engine);
+            contentInfo.add(type);
+            contentInfo.add(description);
+            chapter.add(contentInfo);
+            chapter.add(new Paragraph(""));
+            //组装表格
+            Paragraph tableParagraph = new Paragraph();
+            //设置表格
+            PdfPTable table = setTableHeader(tableHeader, getChineseFontAsStyle(BaseColor.BLACK, 16));
+            //设置列信息
+            setTableColumn(table, tableInfo, font);
+            tableParagraph.add(table);
+            chapter.add(tableParagraph);
+            //设置索引表
+            Paragraph blankTwo = new Paragraph("\n\n");
+            chapter.add(blankTwo);
+            PdfPTable indexTable = setTableHeader(indexHeader, getChineseFontAsStyle(BaseColor.BLACK, 16));
+            table.setWidthPercentage(100);
+            indexTable = setIndexTableColumn(indexTable, tableInfo.getIndexInfoList(), getFontAsStyle(BaseColor.RED, 10));
+            Paragraph indexTableParagraph = new Paragraph();
+            indexTableParagraph.add(indexTable);
+            chapter.add(indexTableParagraph);
+
+            //加入文档中
+            doc.add(chapter);
+            //保存章节内容
+            chapterList.add(chapter);
+            order++;
+        }
+        doc.close();
+        //存目录监听 结束
+
+
+        Document document = new Document(rect);
+//        FileOutputStream os = new FileOutputStream(FILE_DIR + pdfName + ".pdf");
+        PdfWriter writer = PdfWriter.getInstance(document, new ByteArrayOutputStream());
+        IndexEvent indexEvent = new IndexEvent();
+        writer.setPageEvent(indexEvent);
+        document.open();
+        //添加章节目录
+        Chapter indexChapter = new Chapter(new Paragraph("", getFontAsStyle(BaseColor.BLACK, 18)), 0);
+        indexChapter.setNumberDepth(-1);
+        // 设置数字深度
+        int i = 1;
+        for (Map.Entry<String, Integer> index : event.index.entrySet()) {
+            String key = index.getKey();
+            String[] keyValue = key.split(" ");
+            //设置跳转显示名称
+            int pageNo = index.getValue();
+            Chunk pointChunk = new Chunk(new DottedLineSeparator());
+            Chunk pageNoChunk = new Chunk(pageNo + "");
+            String tempDescription = key;
+            if (!StringUtil.isEmpty(tableInfos.get(i - 1).getDescription())) {
+                tempDescription += "(" + tableInfos.get(i - 1).getDescription() + ")";
+            }
+            Paragraph jumpParagraph = new Paragraph(tempDescription, getChineseFontAsStyle(BaseColor.BLACK, 12));
+            jumpParagraph.add(pointChunk);
+            jumpParagraph.add(pageNoChunk);
+            Anchor anchor = new Anchor(jumpParagraph);
+            String jump = keyValue[keyValue.length - 1].trim();
+            //设置跳转链接
+            anchor.setReference("#" + jump);
+            indexChapter.add(anchor);
+            indexChapter.add(new Paragraph());
+            i++;
+        }
+        document.add(indexChapter);
+        document.newPage();
+        //添加内容
+        for (Chapter c : chapterList) {
+            indexEvent.setBody(true);
+            document.add(c);
+        }
+        document.close();
+        return document;
+    }
+
+    /**
+     *获取Document
+     * @param ip
+     * @param dbName
+     * @param port
+     * @param userName
+     * @param passWord
+     * @param filePath
+     * @param pdfName
+     * @return
+     */
+    public static Document getDocument(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName){
+    //得到生成数据
+    try {
+
+        String url = "jdbc:mysql://" + ip + ":" + port + "/" + dbName + "?useSSL=false&serverTimezone=UTC";
+        Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "mySql");
+        List<TableInfo> list = getBuildPdfTableData(getTables(connection, dbName));
+        return getDocumentBuild(null, list, null);
+    }catch (Exception e){
+    logger.error("获取getDocumentBuild异常",e);
+        return null;
+    }
+}
+
+
+
 }
