@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -44,10 +45,8 @@ public class BuildSqlserverPDF {
      * @param port     例如: 3306
      * @param userName 例如: root
      * @param passWord 例如: root
-     * @param filePath 例如:  D:\ideaspace\export_dbInfo\src\main\resources\
-     * @param pdfName  例如:  testPDF
      */
-    public static void MakePdf(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName) {
+    public static void MakePdf(String ip, String dbName, String port, String userName, String passWord,HttpServletResponse response) {
         try {
 
             String dbURL="jdbc:sqlserver://"+ip+":"+port+";DatabaseName="+dbName+";";
@@ -93,16 +92,15 @@ public class BuildSqlserverPDF {
                 Ta.setColumnList(list_column);
                 Ta.setIndexInfoList(list_index);
             }
-            FileUtils.forceMkdir(new File(filePath));
-            //带目录
-            build(filePath, list_table, pdfName);
+
+            build(list_table, response);
         } catch (Exception e) {
             e.printStackTrace();
             logger.info("生成PDF失败");
         }
     }
 
-    public static void build(String FILE_DIR, List<SqlserverTabelInfo>  tableInfos, String pdfName) throws Exception {
+    public static void build(List<SqlserverTabelInfo>  tableInfos, HttpServletResponse response) throws Exception {
         String fontDir = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "");
         fontDir += "src/main/resources/";
         BaseFont bfChinese = BaseFont.createFont(fontDir + "font" + File.separator + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
@@ -178,10 +176,11 @@ public class BuildSqlserverPDF {
 
 
         Document document = new Document(rect);
-        FileOutputStream os = new FileOutputStream(FILE_DIR + pdfName + ".pdf");
-        PdfWriter writer = PdfWriter.getInstance(document, os);
+        PdfWriter writer = PdfWriter.getInstance(document, new ByteArrayOutputStream());
         IndexEvent indexEvent = new IndexEvent();
         writer.setPageEvent(indexEvent);
+        response.setContentType("application/pdf");
+        PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
         //添加章节目录
         Chapter indexChapter = new Chapter(new Paragraph("",  BuildPDF.getFontAsStyle(BaseColor.BLACK, 18)), 0);
@@ -218,9 +217,7 @@ public class BuildSqlserverPDF {
             indexEvent.setBody(true);
             document.add(c);
         }
-
         document.close();
-        os.close();
     }
 
     /*

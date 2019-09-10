@@ -44,7 +44,7 @@ public class Test {
         String FILE_DIR = "F:/pdf/";
         //生成PDF文件
         try {
-            BuildPgSqlPdf.buildPdf("192.168.161.3", "mydata", "54321", "postgres", "root", FILE_DIR, "mydata");
+//            BuildPgSqlPdf.buildPdf("192.168.161.3", "mydata", "54321", "postgres", "root", FILE_DIR, "mydata");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,7 +56,7 @@ public class Test {
     @org.junit.Test
     public void testMakeSqlServerPdf() {
         String FILE_DIR = "F:/pdf/";
-        BuildSqlserverPDF.MakePdf("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA", FILE_DIR, "zhou");
+//        BuildSqlserverPDF.MakePdf("192.168.161.3", "zhou", "1433", "SA", "zhoufan123AAA", FILE_DIR, "zhou");
     }
 
     @org.junit.Test

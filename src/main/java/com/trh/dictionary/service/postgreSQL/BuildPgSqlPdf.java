@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,7 +27,7 @@ import java.util.List;
 public class BuildPgSqlPdf {
     static Logger logger = LoggerFactory.getLogger(BuildPgSqlPdf.class);
 
-    public static void buildPdf(String ip, String dbName, String port, String userName, String passWord, String filePath, String pdfName) throws Exception {
+    public static void buildPdf(String ip, String dbName, String port, String userName, String passWord, HttpServletResponse response) throws Exception {
         //得到生成数据
         String url = "jdbc:postgresql://" + ip + ":" + port + "/" + dbName;
         Connection connection = ConnectionFactory.getConnection(url, userName, passWord, "pgSql");
@@ -36,10 +37,9 @@ public class BuildPgSqlPdf {
         }
 
         try {
-            FileUtils.forceMkdir(new File(filePath));
-            BuildPDF.build(filePath, list, pdfName);
+            BuildPDF.getDocumentBuild( list, response);
         } catch (Exception e) {
-            logger.error("生成pdf异常", e);
+            logger.error("生成PG数据库pdf异常", e);
         }
     }
 

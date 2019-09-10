@@ -44,7 +44,7 @@ public class DatabaseController {
                     //得到生成数据
                     String url = "jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
                     Connection connection = ConnectionFactory.getConnection(url, username, password, "mySql");
-                    tableInfo = BuildPDF.getBuildPdfTableData(BuildPDF.getTables(connection, database));
+                    tableInfo = BuildMysqlPdf.getBuildPdfTableData(BuildMysqlPdf.getTables(connection, database));
                     break;
                 case "oracle":
                     tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//" + ip + ":" + port + "/" + database + "", username, password);
@@ -114,7 +114,7 @@ public class DatabaseController {
                     //得到生成数据
                     String url = "jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
                     Connection connection = ConnectionFactory.getConnection(url, username, password, "mySql");
-                    tableInfo = BuildPDF.getBuildPdfTableData(BuildPDF.getTables(connection, database));
+                    tableInfo = BuildMysqlPdf.getBuildPdfTableData(BuildMysqlPdf.getTables(connection, database));
                     break;
                 case "oracle":
                     tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//" + ip + ":" + port + "/" + database + "", username, password);
@@ -150,64 +150,33 @@ public class DatabaseController {
             switch (selector) {
                 case "mysql":
                     //得到生成数据
-                    BuildPDF.MakePdf(ip, database, port, username, password,filePath,"DataBase");
+                    BuildMysqlPdf.MakeMysqlPdf(ip, database, port, username, password,res);
                     break;
                 case "oracle":
                     List<TableInfo> tableInfo = OracleDatabase.getTableInfo("jdbc:oracle:thin:@//" + ip + ":" + port + "/" + database + "", username, password);
                     if (tableInfo.size() == 0) {
                         return;
                     }
-                    FileUtils.forceMkdir(new File(filePath));
                     //带目录
-                    BuildPDF.build(filePath, tableInfo, "DataBase");
+                    BuildPDF.getDocumentBuild(tableInfo,res);
                     break;
                 case "SQL server":
-                    BuildSqlserverPDF.MakePdf(ip, database, port, username, password,filePath,"DataBase");
+                    BuildSqlserverPDF.MakePdf(ip, database, port, username, password,res);
                     break;
                 case "PostgreSQL":
-                    BuildPgSqlPdf.buildPdf(ip, database, port, username, password,filePath,"DataBase");
+                    BuildPgSqlPdf.buildPdf(ip, database, port, username, password,res);
                     break;
                 case "DB2":
                     List<TableInfo> Db2tableInfo = Db2Executor.getDB2Tables(ip, Integer.valueOf(port), database, username, password);
                     if (Db2tableInfo.size() == 0) {
                         return;
                     }
-                    FileUtils.forceMkdir(new File(filePath));
                     //带目录
-                    BuildPDF.build(filePath, Db2tableInfo, "DataBase");
+                    BuildPDF.getDocumentBuild( Db2tableInfo,res);
                     break;
             }
         } catch (Exception e) {
             logger.error("error==>" + e);
-        }
-        String fileName = "DataBase.pdf";
-        res.setHeader("content-type", "application/octet-stream");
-        res.setContentType("application/octet-stream");
-        res.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-        byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
-        OutputStream os = null;
-        try {
-            os = res.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(
-                    new File(filePath + fileName)));
-            int i = bis.read(buff);
-
-            while (i != -1) {
-                os.write(buff, 0, buff.length);
-                os.flush();
-                i = bis.read(buff);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bis != null) {
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }
