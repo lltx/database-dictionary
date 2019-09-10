@@ -856,9 +856,7 @@ public class BuildPDF {
 
 
     public static void build(String FILE_DIR, List<TableInfo> tableInfos, String pdfName) throws Exception {
-        String fontDir = BuildPDF.class.getResource("/").getPath().replaceAll("target/classes/", "").replaceAll("target/test-classes/", "");
-        fontDir += "src/main/resources/";
-        BaseFont bfChinese = BaseFont.createFont(fontDir + "font" + File.separator + "verdana.ttf", BaseFont.MACROMAN, BaseFont.NOT_EMBEDDED);
+        BaseFont bfChinese = BaseFont.createFont("STSongStd-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
         Font font = new Font(bfChinese, 12, Font.BOLDITALIC);
         // 设置类型，加粗
         font.setStyle(Font.NORMAL);
