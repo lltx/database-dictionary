@@ -9,7 +9,7 @@
 DOCKER镜像：
 docker pull 251878350/database-dictionary:v4.0
 
-docker run  imageid  默认监听端口 9998
+docker run -itd -p 9998:9998 --name=database-dictionary  251878350/database-dictionary:v4.0
 
 在项目的单元测试用例中，有相关数据库的DEMO。
 PDF格式数据字典效果展示如下：
