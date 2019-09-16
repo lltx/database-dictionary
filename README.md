@@ -6,6 +6,9 @@
 码云下载地址：https://gitee.com/cdtrh_group/database-dictionary
 官方QQ群：256612400
 #### 使用说明
+DOCKER镜像：
+docker push 251878350/database-dictionary:v4.0
+
 在项目的单元测试用例中，有相关数据库的DEMO。
 PDF格式数据字典效果展示如下：
 ![输入图片说明](https://images.gitee.com/uploads/images/2019/0909/165825_17d123d2_1447662.png "PDF2.png")
