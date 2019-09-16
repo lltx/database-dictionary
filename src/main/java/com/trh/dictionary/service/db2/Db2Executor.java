@@ -4,7 +4,6 @@ import com.mysql.jdbc.StringUtils;
 import com.trh.dictionary.bean.ColumnInfo;
 import com.trh.dictionary.bean.IndexInfo;
 import com.trh.dictionary.bean.TableInfo;
-import com.trh.dictionary.dao.ConnectionFactory;
 import com.trh.dictionary.util.SqlExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,6 +217,7 @@ public class Db2Executor {
      */
     public static List<String> databases(Connection conn) throws SQLException {
         if (null == conn) {
+            logger.info("connection can not be null");
             throw new SQLException("connection can not be null");
         }
         String sql = " select SCHEMANAME, OWNER, CREATE_TIME from syscat.schemata WHERE OWNERTYPE = 'U' ";
