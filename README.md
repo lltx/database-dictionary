@@ -7,7 +7,9 @@
 官方QQ群：256612400
 #### 使用说明
 DOCKER镜像：
-docker push 251878350/database-dictionary:v4.0
+docker pull 251878350/database-dictionary:v4.0
+
+docker run  imageid  默认监听端口 9998
 
 在项目的单元测试用例中，有相关数据库的DEMO。
 PDF格式数据字典效果展示如下：
