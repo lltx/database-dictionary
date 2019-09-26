@@ -300,9 +300,6 @@ public class BuildPDF {
             oneTble.append(res1);
             List<ColumnInfo> columnInfos = info.getColumnList();
             //拼接列
-            if (columnInfos.size() > 0) {
-
-            }
             for (int k = 0; k < columnInfos.size(); k++) {
                 ColumnInfo Column = columnInfos.get(k);
                 oneTble.append("|").append(Column.getOrder()).append("|").
@@ -319,9 +316,16 @@ public class BuildPDF {
 
                 }*/
                 if(null == Column.getDescription()){
-                    oneTble.append("|").append("\n");
+                    oneTble.append(" ").append("|").append("\n");
                 }else{
-                    oneTble.append(Column.getDescription().replaceAll(" ","")).append("|").append("\n");
+                    String str = Column.getDescription();
+                    str = str.replaceAll("\n","");
+                    if(str.length() == 0){
+                        oneTble.append("...").append("|").append("\n");
+                    }else{
+                        oneTble.append(str).append("|").append("\n");
+                    }
+
                 }
 
             }
