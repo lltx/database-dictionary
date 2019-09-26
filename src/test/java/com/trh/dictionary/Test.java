@@ -26,11 +26,11 @@ public class Test {
 
     @org.junit.Test
     public void testMakeMySqlPdf() {
- /*       String FILE_DIR = "F:/pdf/";
+        String FILE_DIR = "F:/pdf/";
         //生成PDF文件
-        BuildPDF.MakePdf("localhost", "cd_core", "3306", "root", "root", FILE_DIR, "cd_core");
+//        BuildPDF.createPdf("localhost", "cd_core", "3306", "root", "root", FILE_DIR, "cd_core");
         //生成MARKDOWN文件
-        BuildPDF.MakeMarkDown("localhost", "cd_core", "3306", "root", "root", FILE_DIR);*/
+        BuildPDF.MakeMarkDown("localhost", "cd_core", "3306", "root", "root", FILE_DIR);
 
         String proFilePath = System.getProperty("user.dir");
         System.out.println(proFilePath);

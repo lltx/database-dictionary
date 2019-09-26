@@ -310,14 +310,20 @@ public class BuildPDF {
                         append(Column.getType()).append("|").
                         append(Column.getIsNull()).append("|").
                         append(Column.getDefaultValue()).append("|");
-                if ((k + 1) == columnInfos.size()) {
+                /*if ((k + 1) == columnInfos.size()) {
                     oneTble.append(Column.getDescription()).append("||").
                             append("\n");
                 } else {
                     oneTble.append(Column.getDescription()).append("|").
                             append("\n");
 
+                }*/
+                if(null == Column.getDescription()){
+                    oneTble.append("|").append("\n");
+                }else{
+                    oneTble.append(Column.getDescription().replaceAll(" ","")).append("|").append("\n");
                 }
+
             }
             //拼接索引
             oneTble.append("\n");
