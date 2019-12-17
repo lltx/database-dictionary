@@ -11,6 +11,7 @@ import com.trh.dictionary.util.TableBasicEnum;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -323,7 +324,7 @@ public class BuildMysqlPdf {
             ColumnInfo columnInfo = new ColumnInfo();
             columnInfo.setName(resultSet.getString(ColumnBasicEnum.Field.getDesc()) + " " + resultSet.getString(ColumnBasicEnum.Extra.getDesc()));
             columnInfo.setType(resultSet.getString(ColumnBasicEnum.Type.getDesc()));
-            columnInfo.setDescription(resultSet.getString(ColumnBasicEnum.Comment.getDesc()));
+            columnInfo.setDescription(resolveLineFeed(resultSet.getString(ColumnBasicEnum.Comment.getDesc())));
             columnInfo.setIsNull(resultSet.getString(ColumnBasicEnum.Null.getDesc()));
             columnInfo.setOrder(order++);
             columnInfo.setDefaultValue(resultSet.getString(ColumnBasicEnum.Default.getDesc()));
@@ -336,4 +337,19 @@ public class BuildMysqlPdf {
         resultSet.close();
         return columnInfos;
     }
+
+    /**
+     * 处理注释换行问题
+     * @param  commentDesc : 数据库字段的注释
+     */
+    public static String resolveLineFeed(String commentDesc){
+        if(!StringUtils.isEmpty(commentDesc)){
+            //去换行符
+            return  StringUtils.delete(commentDesc,"\\r|\\n");
+        }
+        return  "";
+
+    }
+
+
 }
