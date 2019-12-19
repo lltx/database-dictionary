@@ -42,7 +42,7 @@ public class DatabaseController {
             switch (selector) {
                 case "mysql":
                     //得到生成数据
-                    String url = "jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
+                    String url = "jdbc:mysql://" + ip + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC&characterEncoding=utf8";
                     Connection connection = ConnectionFactory.getConnection(url, username, password, "mySql");
                     tableInfo = BuildMysqlPdf.getBuildPdfTableData(BuildMysqlPdf.getTables(connection, database));
                     break;
